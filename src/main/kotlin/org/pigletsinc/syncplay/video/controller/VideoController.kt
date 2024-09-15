@@ -1,12 +1,12 @@
-package org.pigletsinc.syncplay.room.controller
+package org.pigletsinc.syncplay.video.controller
 
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
-class RoomController {
+class VideoController {
     @GetMapping("/watch")
-    fun watch(): String {
+    fun watch() : String {
         return "watch"
     }
 }
