@@ -11,9 +11,17 @@
 <body>
 <h1>Watch Video Together</h1>
 <div id="video-player">
+
     <!-- YouTube iframe with enablejsapi=1 -->
     <iframe id="player" width="560" height="315"
-            src="https://www.youtube.com/embed/MYEx0kO2-8A?enablejsapi=1" allowfullscreen></iframe>
+            src="https://www.youtube.com/embed/MYEx0kO2-8A?enablejsapi=1" allowfullscreen>
+    </iframe>
+
+<!--    logout button-->
+    <a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a>
+    <form id="logout-form" action="/logout" method="post" style="display: none;">
+    </form>
+
 </div>
 </body>
 </html>
