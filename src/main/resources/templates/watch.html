@@ -3,27 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Video</title>
-    <script src="/js/web-socket.js"></script> <!-- Include your WebSocket client JS -->
+    <title>Watch Video Together</title>
+    <script src="/js/web-socket.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 <h1>Watch Video Together</h1>
+
+<!-- Input field for YouTube link -->
+<div id="video-input">
+    <label for="video-url"></label>
+    <input type="text" id="video-url" placeholder="Enter YouTube video URL">
+    <button onclick="loadVideo()">Load Video</button>
+</div>
+
+<!-- Video player container -->
 <div id="video-player">
-
-    <!-- YouTube iframe with enablejsapi=1 -->
     <iframe id="player" width="560" height="315"
-            src="https://www.youtube.com/embed/MYEx0kO2-8A?enablejsapi=1" allowfullscreen>
+            src="https://www.youtube.com/embed/" allowfullscreen>
     </iframe>
+</div>
 
-    <!-- Logout button below the iframe -->
-    <div id="logout">
-        <a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a>
-        <form id="logout-form" action="/logout" method="post" style="display: none;">
-        </form>
-    </div>
+<!-- Logout button below the iframe -->
+<div id="logout">
+    <a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a>
+    <form id="logout-form" action="/logout" method="post" style="display: none;"></form>
 </div>
 </body>
 </html>

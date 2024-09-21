@@ -88,3 +88,37 @@ window.onload = function () {
     connect();
     loadYouTubeAPI();
 };
+
+// Load video based on the input URL
+function loadVideo() {
+    let videoUrl = document.getElementById('video-url').value;
+
+    // Extract video ID from YouTube URL
+    let videoId = extractVideoId(videoUrl);
+    if (videoId) {
+        // Update the iframe src with the new video ID
+        document.getElementById('player').src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+    } else {
+        alert('Invalid YouTube URL');
+    }
+}
+
+// Extract video ID from different YouTube URL formats
+function extractVideoId(url) {
+    let videoId = null;
+    const urlPatterns = [
+        /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]+)/, // youtu.be/<video_id>
+        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/, // youtube.com/watch?v=<video_id>
+        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]+)/ // youtube.com/embed/<video_id>
+    ];
+
+    for (let pattern of urlPatterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+            videoId = match[1];
+            break;
+        }
+    }
+
+    return videoId;
+}
