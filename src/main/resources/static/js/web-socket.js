@@ -97,7 +97,7 @@ function loadVideo() {
     let videoId = extractVideoId(videoUrl);
     if (videoId) {
         // Update the iframe src with the new video ID
-        document.getElementById('player').src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+        player.loadVideoById(videoId);
     } else {
         alert('Invalid YouTube URL');
     }
