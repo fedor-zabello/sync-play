@@ -13,16 +13,30 @@ function connect() {
             let message = JSON.parse(messageOutput.body);
             handleSyncMessage(message);
         });
+        stompClient.subscribe('/topic/syncSource', function (syncSourceUrlOutput) {
+            let syncSourceUrlMessage = JSON.parse(syncSourceUrlOutput.body);
+            handleSourceUrlMessage(syncSourceUrlMessage);
+        });
     });
 }
 
 // Send a sync message with the current video state and clientId
 function sendSyncMessage(action, currentTime) {
     if (stompClient && stompClient.connected) {
-        stompClient.send("/app/syncVideo", {}, JSON.stringify({
+        stompClient.send("/app/videoSync", {}, JSON.stringify({
             'action': action,
             'time': currentTime,
             'clientId': clientId
+        }));
+    }
+}
+
+
+// Send a syncSourceUrlOutput message with the video url
+function sendSourceUrlSyncMessage(videoId) {
+    if (stompClient && stompClient.connected) {
+        stompClient.send("/app/syncSource", {}, JSON.stringify({
+            'videoId': videoId
         }));
     }
 }
@@ -48,6 +62,11 @@ function handleSyncMessage(message) {
         player.seekTo(message.time, true); // Synchronize time
         player.pauseVideo();               // Pause the video
     }
+}
+// Handle syncSourceUrl  messages received from the server
+function handleSourceUrlMessage(syncSourceUrlMessage) {
+    // Handle 'syncSourceUrlMessage'
+        player.loadVideoById(syncSourceUrlMessage.videoId);
 }
 
 // YouTube player state change handler
@@ -101,6 +120,7 @@ function loadVideo() {
     } else {
         alert('Invalid YouTube URL');
     }
+    sendSourceUrlSyncMessage(videoId);
 }
 
 // Extract video ID from different YouTube URL formats
