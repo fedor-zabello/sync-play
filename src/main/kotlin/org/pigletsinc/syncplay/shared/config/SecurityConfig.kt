@@ -30,21 +30,18 @@ class BasicConfiguration {
                 auth
                     .anyRequest().authenticated()
             }
-            // Enable form login with username/password
             .formLogin { form ->
                 form
-                    .loginPage("/login")  // Custom login page for username/password
-                    .defaultSuccessUrl("/watch", true)  // Redirect to home after form login
-                    .permitAll()  // Allow everyone to see the login page
-            }
-            // Enable Google OAuth2 login
-            .oauth2Login { oauth2 ->
-                oauth2
-                    .loginPage("/login")  // Same custom login page
-                    .defaultSuccessUrl("/watch", true)  // Redirect to home after Google login
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/watch", true)
                     .permitAll()
             }
-            // Enable logout support
+            .oauth2Login { oauth2 ->
+                oauth2
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/watch", true)
+                    .permitAll()
+            }
             .logout { logout ->
                 logout
                     .logoutUrl("/logout")
@@ -53,6 +50,7 @@ class BasicConfiguration {
             }
         return http.build()
     }
+
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
