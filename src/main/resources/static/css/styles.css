@@ -1,9 +1,0 @@
-#video-player {
-    display: flex;
-    flex-direction: column;
-    margin-top: 20px;
-}
-
-#logout {
-    margin-top: 15px;
-}
