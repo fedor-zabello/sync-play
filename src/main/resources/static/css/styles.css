@@ -7,3 +7,21 @@
 #logout {
     margin-top: 15px;
 }
+
+.google-login {
+    background-color: #4285F4;
+    border-color: #FFFFFF;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+
+.google-login i {
+    color: #DB4437;
+}
+
+.google-login:hover {
+    color: #FBBC05;  /* Change text to Google Red on hover */
+}
