@@ -51,7 +51,7 @@ function handleSyncMessage(message) {
     // Set lock to true to prevent sending more sync messages
     lock = true;
     setTimeout(() => {
-        lock = false; // Reset lock after 100ms
+        lock = false; // Reset lock after 1s
     }, 1000);
 
     // Handle 'play' and 'pause' actions
