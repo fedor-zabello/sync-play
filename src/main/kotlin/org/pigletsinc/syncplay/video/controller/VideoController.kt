@@ -6,5 +6,5 @@ import org.springframework.web.bind.annotation.GetMapping
 @Controller
 class VideoController {
     @GetMapping("/watch")
-    fun getWatchPage() = "watch"
+    fun getWatchPage() = "base"
 }
