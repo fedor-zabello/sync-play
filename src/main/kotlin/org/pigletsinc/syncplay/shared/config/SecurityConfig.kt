@@ -28,6 +28,7 @@ class BasicConfiguration {
         http
             .authorizeHttpRequests { auth ->
                 auth
+                    .requestMatchers("/css/**").permitAll()
                     .anyRequest().authenticated()
             }
             .formLogin { form ->
