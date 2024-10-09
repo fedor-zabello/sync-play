@@ -52,7 +52,6 @@ class BasicConfiguration {
         return http.build()
     }
 
-
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         val encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
