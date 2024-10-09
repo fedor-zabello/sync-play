@@ -19,3 +19,5 @@ spring:
     url: jdbc:postgresql://localhost:5432/piglets
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+  flyway:
+    default-schema: sync_play
