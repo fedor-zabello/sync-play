@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class VideoSyncController {
-
     @MessageMapping("/videoSync")
     @SendTo("/topic/videoSync")
     fun syncVideos(message: VideoSyncMessage): VideoSyncMessage {
