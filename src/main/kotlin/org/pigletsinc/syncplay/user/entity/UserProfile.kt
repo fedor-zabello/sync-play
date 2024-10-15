@@ -18,5 +18,5 @@ data class UserProfile(
     @Column(nullable = false)
     val name: String,
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     val createdAt: LocalDateTime = LocalDateTime.now() )
