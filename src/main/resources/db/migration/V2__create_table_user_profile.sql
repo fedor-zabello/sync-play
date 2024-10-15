@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS user_profile
+(
+    id BIGINT PRIMARY KEY,
+    name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_user_credentials_email ON user_credentials(email);
