@@ -15,14 +15,11 @@ data class UserCredentials(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @Column(nullable = false, unique = true)
     val email: String,
-
     @Column(nullable = false)
     val password: String,
-
     @ManyToOne
     @JoinColumn(name = "user_profile_id", nullable = false)
-    val userProfile: UserProfile
+    val userProfile: UserProfile,
 )
