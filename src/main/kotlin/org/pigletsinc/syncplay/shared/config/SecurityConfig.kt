@@ -18,7 +18,8 @@ class SecurityConfig {
     fun userDetailsService(passwordEncoder: PasswordEncoder): InMemoryUserDetailsManager {
         val user:
             UserDetails =
-            User.withUsername("micropiglet")
+            User
+                .withUsername("micropiglet")
                 .password(passwordEncoder.encode("microcarrot"))
                 .roles("USER")
                 .build()
@@ -30,22 +31,21 @@ class SecurityConfig {
         http
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/css/**").permitAll()
-                    .anyRequest().authenticated()
-            }
-            .formLogin { form ->
+                    .requestMatchers("/css/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+            }.formLogin { form ->
                 form
                     .loginPage("/login")
                     .defaultSuccessUrl("/watch", true)
                     .permitAll()
-            }
-            .oauth2Login { oauth2 ->
+            }.oauth2Login { oauth2 ->
                 oauth2
                     .loginPage("/login")
                     .defaultSuccessUrl("/watch", true)
                     .permitAll()
-            }
-            .logout { logout ->
+            }.logout { logout ->
                 logout
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/login?logout")
