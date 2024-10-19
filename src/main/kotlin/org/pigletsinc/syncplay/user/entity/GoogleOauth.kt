@@ -15,11 +15,9 @@ data class GoogleOauth(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @Column(nullable = false)
     val oauthId: String,
-
     @ManyToOne
     @JoinColumn(name = "user_profile_id", nullable = false)
-    val userProfile: UserProfile
+    val userProfile: UserProfile,
 )
