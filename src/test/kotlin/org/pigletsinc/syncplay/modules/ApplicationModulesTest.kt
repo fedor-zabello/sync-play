@@ -5,7 +5,6 @@ import org.springframework.modulith.core.ApplicationModules
 import org.springframework.modulith.docs.Documenter
 import kotlin.test.Test
 
-
 class ApplicationModulesTest {
     @Test
     fun verifiesModularStructure() {

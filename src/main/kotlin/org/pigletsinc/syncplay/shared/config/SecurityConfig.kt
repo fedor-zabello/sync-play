@@ -13,13 +13,15 @@ import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
 @EnableWebSecurity
-class BasicConfiguration {
+class SecurityConfig {
     @Bean
     fun userDetailsService(passwordEncoder: PasswordEncoder): InMemoryUserDetailsManager {
-        val user: UserDetails = User.withUsername("micropiglet")
-            .password(passwordEncoder.encode("microcarrot"))
-            .roles("USER")
-            .build()
+        val user:
+            UserDetails =
+            User.withUsername("micropiglet")
+                .password(passwordEncoder.encode("microcarrot"))
+                .roles("USER")
+                .build()
         return InMemoryUserDetailsManager(user)
     }
 
