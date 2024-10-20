@@ -1,4 +1,4 @@
-package org.pigletsinc.syncplay.user.entity
+package org.pigletsinc.syncplay.user
 
 data class UserRegistrationDto(
     val name: String,

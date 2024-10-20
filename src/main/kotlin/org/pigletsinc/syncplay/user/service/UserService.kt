@@ -1,9 +1,9 @@
 package org.pigletsinc.syncplay.user.service
 
+import org.pigletsinc.syncplay.user.UserRegistrationDto
 import org.pigletsinc.syncplay.user.entity.GoogleOauth
 import org.pigletsinc.syncplay.user.entity.UserCredentials
 import org.pigletsinc.syncplay.user.entity.UserProfile
-import org.pigletsinc.syncplay.user.entity.UserRegistrationDto
 import org.pigletsinc.syncplay.user.repository.GoogleOauthRepository
 import org.pigletsinc.syncplay.user.repository.UserCredentialsRepository
 import org.pigletsinc.syncplay.user.repository.UserProfileRepository
@@ -22,7 +22,7 @@ class UserService(
         // Create and save UserProfile
         val userProfile =
             UserProfile(
-                name = userDto.name,
+                name = userDto.email,
             )
         val savedUserProfile = userProfileRepository.save(userProfile)
 

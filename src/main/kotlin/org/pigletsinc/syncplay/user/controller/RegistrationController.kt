@@ -1,26 +1,25 @@
 package org.pigletsinc.syncplay.user.controller
 
-import jakarta.servlet.http.HttpServletResponse
-import org.pigletsinc.syncplay.user.entity.UserRegistrationDto
+import org.pigletsinc.syncplay.user.UserRegistrationDto
 import org.pigletsinc.syncplay.user.service.UserService
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseBody
 
 @Controller
+@RequestMapping("/api/v1/users")
 class RegistrationController(
     private val userService: UserService,
 ) {
-    @GetMapping("/auth/registration")
-    fun showRegistrationForm() = "registration"
-
-    @PostMapping("/auth/registration")
+    @PostMapping("/registration")
+    @ResponseBody
     fun registrationUser(
         @RequestBody userDto: UserRegistrationDto,
-        response: HttpServletResponse,
-    ) {
+    ): ResponseEntity<String> {
         userService.registrationUser(userDto)
-        response.sendRedirect("/login") // Redirect to login page
+        return ResponseEntity.ok("Registration successful")
     }
 }

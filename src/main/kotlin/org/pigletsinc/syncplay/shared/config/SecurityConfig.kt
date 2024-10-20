@@ -31,9 +31,11 @@ class SecurityConfig {
         http
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/css/**")
+                    .requestMatchers("/css/**", "/js/**")
                     .permitAll()
-                    .requestMatchers("/auth/registration")
+                    .requestMatchers("/registration")
+                    .permitAll()
+                    .requestMatchers("/api/v1/users/registration")
                     .permitAll()
                     .anyRequest()
                     .authenticated()
