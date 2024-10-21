@@ -1,7 +1,7 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('registrationForm');
 
-    form.addEventListener('submit', function(event) {
+    form.addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent default form submission behavior
 
         // Collect form data
@@ -19,19 +19,19 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(formData)
         })
-            .then(response => {
-                if (response.ok) {
+            .then(response => response.json()) // Parse JSON response
+            .then(data => {
+                if (data.message === "Registration successful") {
                     // If registration is successful, redirect to the login page
                     window.location.href = '/login';
                 } else {
-                    return response.json().then(data => {
-                        // Handle error
-                        alert('Registration failed: ' + data.message);
-                    });
+                    // Handle error and display the message in an alert or on the page
+                    alert('Registration failed: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('Error during registration:', error);
+                alert('Something went wrong. Please try again.');
             });
     });
 });

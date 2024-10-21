@@ -29,13 +29,13 @@ class SecurityConfig {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .authorizeHttpRequests { auth ->
+            .csrf { csrf ->
+                csrf.ignoringRequestMatchers("/api/v1/users/registration") // Disable CSRF for the registration endpoint
+            }.authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers("/css/**", "/js/**")
                     .permitAll()
-                    .requestMatchers("/registration")
-                    .permitAll()
-                    .requestMatchers("/api/v1/users/registration")
+                    .requestMatchers("/registration", "/api/v1/users/registration")
                     .permitAll()
                     .anyRequest()
                     .authenticated()
