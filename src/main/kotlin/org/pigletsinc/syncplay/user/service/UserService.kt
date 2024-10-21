@@ -17,12 +17,11 @@ class UserService(
     private val googleOAuthRepository: GoogleOauthRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
-    // Method for registration with email and password
     fun registrationUser(userDto: UserRegistrationDto) {
         // Create and save UserProfile
         val userProfile =
             UserProfile(
-                name = userDto.email,
+                name = userDto.name,
             )
         val savedUserProfile = userProfileRepository.save(userProfile)
 
