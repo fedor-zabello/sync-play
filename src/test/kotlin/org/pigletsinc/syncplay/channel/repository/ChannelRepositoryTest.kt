@@ -11,29 +11,29 @@ import kotlin.test.Test
 
 @DataJpaTest(excludeAutoConfiguration = [FlywayAutoConfiguration::class])
 class ChannelRepositoryTest
-    @Autowired
-    constructor(
-        val entityManager: TestEntityManager,
-        val channelRepository: ChannelRepository,
-        val userChannelMembership: UserChannelMembershipRepository,
-    ) {
-        @Test
-        fun `Channels are persisted correctly`() {
-            val prawnsClubChannel = Channel(name = "prawns club")
-            entityManager.persist(prawnsClubChannel)
-            entityManager.flush()
-            val foundChannels = channelRepository.findAll()
-            assertThat(foundChannels).contains(prawnsClubChannel)
-        }
+@Autowired
+constructor(
+    val entityManager: TestEntityManager,
+    val channelRepository: ChannelRepository,
+    val userChannelMembership: UserChannelMembershipRepository,
+) {
+    @Test
+    fun `Channels are persisted correctly`() {
+        val prawnsClubChannel = Channel(name = "prawns club")
+        entityManager.persist(prawnsClubChannel)
+        entityManager.flush()
+        val foundChannels = channelRepository.findAll()
+        assertThat(foundChannels).contains(prawnsClubChannel)
+    }
 
     @Test
-        fun `Channel memberships are persisted correctly`() {
-            val prawnsClubChannel = Channel(name = "prawns club")
-            val prawnsClubMembership = UserChannelMembership(userProfileId = 1, channel = prawnsClubChannel)
-            entityManager.persist(prawnsClubChannel)
-            entityManager.persist(prawnsClubMembership)
-            entityManager.flush()
-            val foundMemberships = userChannelMembership.findAll()
-            assertThat(foundMemberships).contains(prawnsClubMembership)
-        }
+    fun `Channel memberships are persisted correctly`() {
+        val prawnsClubChannel = Channel(name = "prawns club")
+        val prawnsClubMembership = UserChannelMembership(userProfileId = 1, channel = prawnsClubChannel)
+        entityManager.persist(prawnsClubChannel)
+        entityManager.persist(prawnsClubMembership)
+        entityManager.flush()
+        val foundMemberships = userChannelMembership.findAll()
+        assertThat(foundMemberships).contains(prawnsClubMembership)
     }
+}
