@@ -44,12 +44,14 @@ class SecurityConfig {
                     .loginPage("/login")
                     .defaultSuccessUrl("/watch", true)
                     .permitAll()
-            }.oauth2Login { oauth2 ->
+            }
+            .oauth2Login { oauth2 ->
                 oauth2
                     .loginPage("/login")
                     .defaultSuccessUrl("/watch", true)
                     .permitAll()
-            }.logout { logout ->
+            }
+            .logout { logout ->
                 logout
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/login?logout")
