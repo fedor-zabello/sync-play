@@ -9,6 +9,7 @@ import org.pigletsinc.syncplay.user.repository.UserCredentialsRepository
 import org.pigletsinc.syncplay.user.repository.UserProfileRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
@@ -17,6 +18,7 @@ class UserService(
     private val googleOAuthRepository: GoogleOauthRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
+    @Transactional
     fun registrationUser(userDto: UserRegistrationDto) {
         // Create and save UserProfile
         val userProfile =

@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 data class UserProfile(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    var id: Long? = null,
     @Column(nullable = false)
     val name: String,
     @Column(name = "created_at", nullable = false, updatable = false)

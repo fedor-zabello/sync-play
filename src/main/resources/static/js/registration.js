@@ -2,16 +2,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('registrationForm');
 
     form.addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent default form submission behavior
+        event.preventDefault();
 
-        // Collect form data
         const formData = {
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
             password: document.getElementById('password').value
         };
 
-        // Send the form data to the server
         fetch('/api/v1/users/registration', {
             method: 'POST',
             headers: {
@@ -19,13 +17,16 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify(formData)
         })
-            .then(response => response.json()) // Parse JSON response
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to register.'); // или верните сообщение, если нужно
+                }
+                return response.json(); // только если успешный ответ
+            })
             .then(data => {
                 if (data.message === "Registration successful") {
-                    // If registration is successful, redirect to the login page
                     window.location.href = '/login';
                 } else {
-                    // Handle error and display the message in an alert or on the page
                     alert('Registration failed: ' + data.message);
                 }
             })
