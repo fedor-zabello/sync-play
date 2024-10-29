@@ -14,3 +14,11 @@
 .google-login:hover {
     color: #FBBC05;  /* Change text to Google Red on hover */
 }
+#messageContainer {
+    margin: 15px 0;
+    text-align: center;
+    color: white; /* Цвет текста для успешных и ошибочных сообщений */
+    background-color: transparent; /* Без фона */
+    border: none; /* Без обрамления */
+    display: none; /* Изначально скрыто */
+}

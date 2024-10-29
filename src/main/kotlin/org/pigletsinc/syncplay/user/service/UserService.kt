@@ -20,45 +20,38 @@ class UserService(
 ) {
     @Transactional
     fun registrationUser(userDto: UserRegistrationDto) {
-        // Create and save UserProfile
         val userProfile =
             UserProfile(
                 name = userDto.name,
             )
         val savedUserProfile = userProfileRepository.save(userProfile)
 
-        // Create UserCredentials with hashed password
         val userCredentials =
             UserCredentials(
                 email = userDto.email,
-                password = passwordEncoder.encode(userDto.password), // Hashing the password
+                password = passwordEncoder.encode(userDto.password),
                 userProfile = savedUserProfile,
             )
 
-        // Save UserCredentials
         userCredentialsRepository.save(userCredentials)
     }
 
-    // Method for registration with Google OAuth
     fun registrationGoogleUser(
         oauthId: String,
         name: String,
     ) {
-        // Create and save UserProfile
         val userProfile =
             UserProfile(
                 name = name,
             )
         val savedUserProfile = userProfileRepository.save(userProfile)
 
-        // Create GoogleOAuth record
         val googleOauth =
             GoogleOauth(
                 oauthId = oauthId,
                 userProfile = savedUserProfile,
             )
 
-        // Save GoogleOAuth
         googleOAuthRepository.save(googleOauth)
     }
 }

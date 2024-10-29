@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('registrationForm');
+    const messageContainer = document.getElementById('messageContainer');
 
     form.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -19,20 +20,43 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Failed to register.'); // или верните сообщение, если нужно
+                    return response.json().then(data => {
+                        throw new Error(data.error || 'Failed to register.');
+                    });
                 }
-                return response.json(); // только если успешный ответ
+                return response.json();
             })
             .then(data => {
                 if (data.message === "Registration successful") {
-                    window.location.href = '/login';
+                    displayMessage('Registration successful! Redirecting to login...');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1500);
                 } else {
-                    alert('Registration failed: ' + data.message);
+                    displayMessage('Registration failed: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('Error during registration:', error);
-                alert('Something went wrong. Please try again.');
+                displayMessage(error.message || 'Something went wrong. Please try again.');
             });
+    });
+
+    function displayMessage(message) {
+        if (!messageContainer) {
+            console.warn("Message container not found on the page.");
+            alert(message);
+            return;
+        }
+
+        messageContainer.textContent = message;
+        messageContainer.style.display = 'block';
+    }
+
+    const inputs = form.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            messageContainer.style.display = 'none';
+        });
     });
 });
