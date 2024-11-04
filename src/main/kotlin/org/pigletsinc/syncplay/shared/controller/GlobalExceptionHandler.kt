@@ -1,4 +1,4 @@
-package org.pigletsinc.syncplay.exception
+package org.pigletsinc.syncplay.shared.controller
 
 import org.postgresql.util.PSQLException
 import org.springframework.dao.DataIntegrityViolationException
@@ -6,16 +6,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.web.server.ResponseStatusException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
-    @ExceptionHandler(ResponseStatusException::class)
-    fun handleResponseStatusException(ex: ResponseStatusException): ResponseEntity<Map<String, String>> {
-        val errorResponse = mapOf("error" to (ex.reason ?: "Unknown error"))
-        return ResponseEntity(errorResponse, ex.statusCode)
-    }
-
     @ExceptionHandler(Exception::class)
     fun handleGenericException(ex: Exception): ResponseEntity<Map<String, String>> {
         val errorResponse = mapOf("error" to "An unexpected error occurred.")
