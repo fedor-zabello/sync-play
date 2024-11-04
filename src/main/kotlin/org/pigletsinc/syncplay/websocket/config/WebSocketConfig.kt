@@ -16,7 +16,7 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        // Registration the endpoint for SockJS to connect to
+        // Register the endpoint for SockJS to connect to
         registry.addEndpoint("/ws").withSockJS()
     }
 }
