@@ -1,7 +1,6 @@
 package org.pigletsinc.syncplay.user.service
 
 import org.pigletsinc.syncplay.user.UserRegistrationDto
-import org.pigletsinc.syncplay.user.entity.GoogleOauth
 import org.pigletsinc.syncplay.user.entity.UserCredentials
 import org.pigletsinc.syncplay.user.entity.UserProfile
 import org.pigletsinc.syncplay.user.repository.GoogleOauthRepository
@@ -34,24 +33,5 @@ class UserService(
             )
 
         userCredentialsRepository.save(userCredentials)
-    }
-
-    fun registrationGoogleUser(
-        oauthId: String,
-        name: String,
-    ) {
-        val userProfile =
-            UserProfile(
-                name = name,
-            )
-        val savedUserProfile = userProfileRepository.save(userProfile)
-
-        val googleOauth =
-            GoogleOauth(
-                oauthId = oauthId,
-                userProfile = savedUserProfile,
-            )
-
-        googleOAuthRepository.save(googleOauth)
     }
 }
