@@ -16,7 +16,7 @@ spring:
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
   datasource:
-    url: jdbc:postgresql://localhost:5432/piglets
+    url: jdbc:postgresql://localhost:5432/piglets?currentSchema=sync_play
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
   flyway:
