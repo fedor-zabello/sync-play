@@ -1,6 +1,6 @@
-package org.pigletsinc.syncplay.shared.config
+package org.pigletsinc.syncplay.user.config
 
-import org.pigletsinc.syncplay.shared.service.CustomUserDetailsService
+import org.pigletsinc.syncplay.user.service.CustomUserDetailsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager

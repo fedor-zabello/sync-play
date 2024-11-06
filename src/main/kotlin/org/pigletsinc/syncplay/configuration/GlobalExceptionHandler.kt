@@ -1,4 +1,4 @@
-package org.pigletsinc.syncplay.shared.controller
+package org.pigletsinc.syncplay.configuration
 
 import org.postgresql.util.PSQLException
 import org.springframework.dao.DataIntegrityViolationException

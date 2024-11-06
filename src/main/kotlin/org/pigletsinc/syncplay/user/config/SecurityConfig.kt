@@ -1,4 +1,4 @@
-package org.pigletsinc.syncplay.shared.config
+package org.pigletsinc.syncplay.user.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
