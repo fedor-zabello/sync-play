@@ -1,4 +1,4 @@
-package org.pigletsinc.syncplay.user.config
+package org.pigletsinc.syncplay.user.auth
 
 import org.pigletsinc.syncplay.user.service.CustomUserDetailsService
 import org.springframework.context.annotation.Bean

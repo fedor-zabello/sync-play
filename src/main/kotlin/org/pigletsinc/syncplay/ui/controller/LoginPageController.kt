@@ -4,7 +4,10 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
-class VideoController {
-    @GetMapping("/watch")
-    fun getWatchPage() = "watch"
+class LoginPageController {
+    @GetMapping("/login")
+    fun getLoginPage() = "login"
+
+    @GetMapping("/registration")
+    fun showRegistrationForm() = "registration"
 }

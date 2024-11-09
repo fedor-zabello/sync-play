@@ -1,7 +1,7 @@
-package org.pigletsinc.syncplay.video.controller
+package org.pigletsinc.syncplay.synchronization.controller
 
-import org.pigletsinc.syncplay.video.model.SourceUrlMessage
-import org.pigletsinc.syncplay.video.model.VideoSyncMessage
+import org.pigletsinc.syncplay.synchronization.model.SourceUrlMessage
+import org.pigletsinc.syncplay.synchronization.model.VideoSyncMessage
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.stereotype.Controller
