@@ -1,4 +1,4 @@
-package org.pigletsinc.syncplay.sync.model
+package org.pigletsinc.syncplay.synchronization.model
 
 data class VideoSyncMessage(
     val action: String,

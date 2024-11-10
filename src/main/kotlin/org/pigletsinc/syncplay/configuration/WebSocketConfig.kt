@@ -1,4 +1,4 @@
-package org.pigletsinc.syncplay.websocket.config
+package org.pigletsinc.syncplay.configuration
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
