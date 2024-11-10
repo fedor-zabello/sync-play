@@ -17,6 +17,8 @@ data class GoogleOauth(
     val id: Long? = null,
     @Column(nullable = false)
     val oauthId: String,
+    @Column(nullable = false)
+    val email: String,
     @ManyToOne
     @JoinColumn(name = "user_profile_id", nullable = false)
     val userProfile: UserProfile,
