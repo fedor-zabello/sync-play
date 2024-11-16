@@ -1,6 +1,6 @@
 package org.pigletsinc.syncplay.shared.config
 
-import org.pigletsinc.syncplay.shared.service.CustomOAuth2UserService
+import org.pigletsinc.syncplay.user.service.CustomOAuth2UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

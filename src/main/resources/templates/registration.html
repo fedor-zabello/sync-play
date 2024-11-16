@@ -5,6 +5,7 @@
     <title>Registration</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body class="bg-dark text-light">
@@ -30,14 +31,14 @@
                         </div>
                         <div id="messageContainer" class="alert" style="display: none;"></div> <!-- Сообщение об ошибке -->
                         <div class="form-group text-center">
-                            <button type="submit" class="btn btn-primary btn-block">Register</button>
+                            <button type="submit" class="btn btn-primary btn-block btn-custom-outline">Register</button>
                         </div>
                     </form>
                     <hr/>
-                    <a th:href="@{/login}" class="btn btn-secondary btn-block">Already have an account? Login</a>
-                    <a th:href="@{/oauth2/authorization/google}" class="btn google-signup btn-block">
-                        <i class="fab fa-google"></i> Sign up with Google
+                    <a th:href="@{/oauth2/authorization/google}" class="btn google-login btn-block">
+                        <i class="fab fa-google"></i> Login with Google
                     </a>
+                    <a th:href="@{/login}" class="btn btn-outline-light btn-block mt-3">Already have an account? Login</a>
                 </div>
             </div>
         </div>

@@ -22,3 +22,14 @@
     border: none; /* Без обрамления */
     display: none; /* Изначально скрыто */
 }
+
+.btn-outline-light:hover {
+    background-color: #007bff; /* Синий цвет наводки */
+    color: white;
+}
+
+.btn-custom-outline {
+    border: 1px solid white; /* Толщина рамки 1px */
+    border-radius: 0.25rem; /* Закругленные углы, как у других кнопок */
+}
+

@@ -28,14 +28,15 @@
                             <input type="password" id="password" name="password" class="form-control bg-dark text-light" required>
                         </div>
                         <div class="form-group text-center">
-                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                            <button type="submit" class="btn btn-primary btn-block btn-custom-outline">Login</button>
                         </div>
                     </form>
-
                     <hr/>
-
                     <a th:href="@{/oauth2/authorization/google}" class="btn google-login btn-block">
                         <i class="fab fa-google"></i> Login with Google
+                    </a>
+                    <a th:href="@{/registration}" class="btn btn-outline-light btn-block mt-3">
+                        Don't have an account? Register
                     </a>
                 </div>
             </div>

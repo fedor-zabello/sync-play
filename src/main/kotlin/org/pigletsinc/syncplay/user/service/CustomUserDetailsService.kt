@@ -1,4 +1,4 @@
-package org.pigletsinc.syncplay.shared.service
+package org.pigletsinc.syncplay.user.service
 
 import org.pigletsinc.syncplay.user.entity.UserCredentials
 import org.pigletsinc.syncplay.user.repository.UserCredentialsRepository
