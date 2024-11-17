@@ -32,10 +32,10 @@ class CustomOAuth2UserService(
         val email = attributes["email"] as String
         val oauthId = attributes["sub"] as String
 
-        var googleUser = googleOauthRepository.findByEmail(email)
+        var googleUser = googleOauthRepository.findByEmailIgnoreCase(email)
 
         if (googleUser == null) {
-            val existingCredentials = userCredentialsRepository.findByEmail(email)
+            val existingCredentials = userCredentialsRepository.findByEmailIgnoreCase(email)
             if (existingCredentials != null) {
                 googleUser =
                     GoogleOauth(

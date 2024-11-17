@@ -19,7 +19,7 @@ class UserService(
 ) {
     @Transactional
     fun registerUser(userDto: UserRegistrationDto) {
-        val googleUser = googleOauthRepository.findByEmail(userDto.email)
+        val googleUser = googleOauthRepository.findByEmailIgnoreCase(userDto.email)
 
         val userProfile =
             if (googleUser != null) {
