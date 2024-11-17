@@ -1,10 +1,10 @@
-package org.pigletsinc.syncplay.video.controller
+package org.pigletsinc.syncplay.ui.controller
 
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
-class VideoController {
+class HomePageController {
     @GetMapping("/watch")
     fun getWatchPage() = "watch"
 }
