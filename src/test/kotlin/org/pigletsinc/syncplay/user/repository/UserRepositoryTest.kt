@@ -33,7 +33,7 @@ class UserRepositoryTest
         @Test
         fun `GoogleOauth is persisted correctly`() {
             val mrPigletProfile = UserProfile(name = "mr. Piglet")
-            val mrPigletGoogleOauth = GoogleOauth(oauthId = "oauth-id", userProfile = mrPigletProfile)
+            val mrPigletGoogleOauth = GoogleOauth(oauthId = "oauth-id", email = "pig@let.com", userProfile = mrPigletProfile)
             entityManager.persist(mrPigletProfile)
             entityManager.persist(mrPigletGoogleOauth)
             entityManager.flush()
