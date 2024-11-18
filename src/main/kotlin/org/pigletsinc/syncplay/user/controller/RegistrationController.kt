@@ -14,10 +14,10 @@ class RegistrationController(
     private val userService: UserService,
 ) {
     @PostMapping("/registration")
-    fun registrationUser(
+    fun registerUser(
         @RequestBody userDto: UserRegistrationDto,
     ): ResponseEntity<Map<String, String>> {
-        userService.registrationUser(userDto)
+        userService.registerUser(userDto)
         val response = mapOf("message" to "Registration successful")
         return ResponseEntity.ok(response)
     }
