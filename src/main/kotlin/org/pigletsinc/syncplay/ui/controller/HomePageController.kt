@@ -7,4 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 class HomePageController {
     @GetMapping("/watch")
     fun getWatchPage() = "watch"
+
+    @GetMapping("/home")
+    fun getHomePage() = "home"
 }
