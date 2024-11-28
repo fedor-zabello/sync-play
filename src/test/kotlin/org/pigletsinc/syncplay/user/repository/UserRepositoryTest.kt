@@ -2,6 +2,7 @@ package org.pigletsinc.syncplay.user.repository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.pigletsinc.syncplay.user.entity.GoogleOauth
+import org.pigletsinc.syncplay.user.entity.UserChannelMembership
 import org.pigletsinc.syncplay.user.entity.UserCredentials
 import org.pigletsinc.syncplay.user.entity.UserProfile
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +19,7 @@ class UserRepositoryTest
         val userCredentialsRepository: UserCredentialsRepository,
         val userProfileRepository: UserProfileRepository,
         val googleOauthRepository: GoogleOauthRepository,
+        val userChannelMembershipRepository: UserChannelMembershipRepository,
     ) {
         @Test
         fun `UserCredentials are persisted correctly`() {
@@ -33,7 +35,8 @@ class UserRepositoryTest
         @Test
         fun `GoogleOauth is persisted correctly`() {
             val mrPigletProfile = UserProfile(name = "mr. Piglet")
-            val mrPigletGoogleOauth = GoogleOauth(oauthId = "oauth-id", email = "pig@let.com", userProfile = mrPigletProfile)
+            val mrPigletGoogleOauth =
+                GoogleOauth(oauthId = "oauth-id", email = "pig@let.com", userProfile = mrPigletProfile)
             entityManager.persist(mrPigletProfile)
             entityManager.persist(mrPigletGoogleOauth)
             entityManager.flush()
@@ -48,5 +51,16 @@ class UserRepositoryTest
             entityManager.flush()
             val foundProfile = userProfileRepository.findAll()
             assertThat(foundProfile).contains(mrPigletProfile)
+        }
+
+        @Test
+        fun `Channel memberships are persisted correctly`() {
+            val mrPigletProfile = UserProfile(name = "mr. Piglet")
+            val prawnsClubMembership = UserChannelMembership(channelId = 1, userProfile = mrPigletProfile)
+            entityManager.persist(mrPigletProfile)
+            entityManager.persist(prawnsClubMembership)
+            entityManager.flush()
+            val foundMemberships = userChannelMembershipRepository.findAll()
+            assertThat(foundMemberships).contains(prawnsClubMembership)
         }
     }

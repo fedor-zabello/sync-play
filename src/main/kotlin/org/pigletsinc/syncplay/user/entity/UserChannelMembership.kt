@@ -1,4 +1,4 @@
-package org.pigletsinc.syncplay.channel.entity
+package org.pigletsinc.syncplay.user.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -16,9 +16,9 @@ data class UserChannelMembership(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @Column(name = "user_profile_id", nullable = false)
-    val userProfileId: Long,
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_id", nullable = false)
-    val channel: Channel,
+    @JoinColumn(name = "user_profile_id", nullable = false)
+    val userProfile: UserProfile,
+    @Column(name = "channel_id", nullable = false)
+    val channelId: Long,
 )
