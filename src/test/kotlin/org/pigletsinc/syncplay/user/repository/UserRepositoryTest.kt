@@ -1,6 +1,7 @@
 package org.pigletsinc.syncplay.user.repository
 
 import org.assertj.core.api.Assertions.assertThat
+import org.pigletsinc.syncplay.user.entity.Channel
 import org.pigletsinc.syncplay.user.entity.GoogleOauth
 import org.pigletsinc.syncplay.user.entity.UserChannelMembership
 import org.pigletsinc.syncplay.user.entity.UserCredentials
@@ -56,8 +57,10 @@ class UserRepositoryTest
         @Test
         fun `Channel memberships are persisted correctly`() {
             val mrPigletProfile = UserProfile(name = "mr. Piglet")
-            val prawnsClubMembership = UserChannelMembership(channelId = 1, userProfile = mrPigletProfile)
+            val prawnsClubChannel = Channel(name = "prawns-club")
+            val prawnsClubMembership = UserChannelMembership(channel = prawnsClubChannel, userProfile = mrPigletProfile)
             entityManager.persist(mrPigletProfile)
+            entityManager.persist(prawnsClubChannel)
             entityManager.persist(prawnsClubMembership)
             entityManager.flush()
             val foundMemberships = userChannelMembershipRepository.findAll()

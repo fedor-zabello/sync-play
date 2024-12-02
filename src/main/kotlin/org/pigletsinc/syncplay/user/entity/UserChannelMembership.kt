@@ -1,6 +1,5 @@
 package org.pigletsinc.syncplay.user.entity
 
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
@@ -12,13 +11,14 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "user_profile_channel")
-data class UserChannelMembership(
+class UserChannelMembership(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_profile_id", nullable = false)
-    val userProfile: UserProfile,
-    @Column(name = "channel_id", nullable = false)
-    val channelId: Long,
+    var userProfile: UserProfile,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "channel_id", nullable = false)
+    var channel: Channel,
 )
