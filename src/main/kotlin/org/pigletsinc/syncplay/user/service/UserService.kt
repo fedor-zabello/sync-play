@@ -1,14 +1,21 @@
 package org.pigletsinc.syncplay.user.service
 
+import org.pigletsinc.syncplay.user.UserDto
 import org.pigletsinc.syncplay.user.UserRegistrationDto
 import org.pigletsinc.syncplay.user.entity.UserCredentials
 import org.pigletsinc.syncplay.user.entity.UserProfile
 import org.pigletsinc.syncplay.user.repository.GoogleOauthRepository
 import org.pigletsinc.syncplay.user.repository.UserCredentialsRepository
 import org.pigletsinc.syncplay.user.repository.UserProfileRepository
+import org.pigletsinc.syncplay.user.toDto
+import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.server.ResponseStatusException
+import java.security.Principal
 
 @Service
 class UserService(
@@ -36,5 +43,19 @@ class UserService(
                 userProfile = userProfile,
             )
         userCredentialsRepository.save(userCredentials)
+    }
+
+    fun getUserProfileByPrincipal(principal: Principal): UserProfile {
+        val userProfile = when (principal){
+            is UsernamePasswordAuthenticationToken -> userCredentialsRepository.findByEmailIgnoreCase(principal.name)?.userProfile
+            is OAuth2AuthenticationToken -> googleOauthRepository.findByOauthId(principal.name)?.userProfile
+            else -> throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")
+        }
+        return userProfile ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+    }
+
+    fun getUserDto(principal: Principal): UserDto {
+        val userProfile = getUserProfileByPrincipal(principal)
+        return userProfile.toDto()
     }
 }
