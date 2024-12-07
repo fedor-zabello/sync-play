@@ -4,6 +4,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToMany
 
 @Entity
 class Channel(
@@ -11,4 +12,6 @@ class Channel(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
     var name: String,
+    @ManyToMany(mappedBy = "channels")
+    var userProfiles: MutableSet<UserProfile> = mutableSetOf(),
 )
