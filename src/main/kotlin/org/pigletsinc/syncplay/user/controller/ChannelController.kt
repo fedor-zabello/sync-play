@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
 
 @RestController
-@RequestMapping("/avi/v1/channels")
+@RequestMapping("/api/v1/channels")
 class ChannelController(
     private val userChannelMembershipService: UserChannelMembershipService
 ) {
