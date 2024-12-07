@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface GoogleOauthRepository : JpaRepository<GoogleOauth, Long> {
     fun findByEmailIgnoreCase(email: String): GoogleOauth?
+    fun findByOauthId(oauthId: String): GoogleOauth?
 }
