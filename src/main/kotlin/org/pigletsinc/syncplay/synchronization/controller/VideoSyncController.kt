@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping
 @Controller
 @RequestMapping("/api/v1/videos")
 class VideoSyncController {
-    @MessageMapping("/videoSync")
-    @SendTo("/topic/videoSync")
+    @MessageMapping("/videoSync/{channelId}")
+    @SendTo("/topic/videoSync/{channelId}")
     fun syncVideos(message: VideoSyncMessage): VideoSyncMessage = message
 
-    @MessageMapping("/syncSource")
-    @SendTo("/topic/syncSource")
+    @MessageMapping("/syncSource/{channelId}")
+    @SendTo("/topic/syncSource/{channelId}")
     fun syncSource(message: SourceUrlMessage): SourceUrlMessage = message
 }

@@ -10,4 +10,7 @@ class HomePageController {
 
     @GetMapping("/home")
     fun getHomePage() = "home"
+
+    @GetMapping("/youtube-iframe")
+    fun getYoutubeIframe() = "youtube-iframe"
 }

@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Watch Video Together</title>
-    <script src="/js/load-channels.js"></script>
-    <script src="/js/user-details.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script type="module" src="/js/channel-service.js"></script>
+    <script src="/js/user-service.js"></script>
+    <script type="module"  src="/js/web-socket.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -31,7 +37,9 @@
                 </form>
             </div>
             <div class="content">
-                <h3 class="text-center">🐷</h3>
+                <div id="youtube-container" class="text-center">
+                    <h3 class="text-center">🐷</h3>
+                </div>
             </div>
         </div>
     </div>
