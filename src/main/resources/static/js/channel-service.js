@@ -1,4 +1,5 @@
-import {connect, initializeYouTubePlayer, loadYouTubeAPI} from "./web-socket.js";
+import {connect} from "./web-socket.js";
+import {initializeYouTubePlayer, loadVideo} from "./iframe-service.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     const response = await fetch('/api/v1/channels', {
@@ -38,12 +39,9 @@ async function loadChannelData(channelId) {
         if (response.ok) {
             youtubeContainer.innerHTML = await response.text();
 
-            // Update the iframe src dynamically
-            const iframe = document.getElementById('player');
-            iframe.src = `https://www.youtube.com/embed/?enablejsapi=1`;
-
-            // Load the YouTube API (if not already loaded)
-            loadYouTubeAPI();
+            // Bind the loadVideo function to the button
+            const loadButton = document.getElementById('load-video-button');
+            loadButton.addEventListener('click', loadVideo);
 
             // Ensure player is initialized after iframe is added
             initializeYouTubePlayer();
