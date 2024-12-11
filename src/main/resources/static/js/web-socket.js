@@ -1,4 +1,4 @@
-import {loadVideoById, synchronizeVideo} from "./iframe-service.js";
+import {loadVideoById, synchronizeVideo} from "./youtube-player.js";
 
 let stompClient = null;
 let socket = null;

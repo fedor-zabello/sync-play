@@ -1,5 +1,5 @@
 import {connect} from "./web-socket.js";
-import {initializeYouTubePlayer, loadVideo} from "./iframe-service.js";
+import {initializeYouTubePlayer, loadVideo} from "./youtube-player.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     const response = await fetch('/api/v1/channels', {

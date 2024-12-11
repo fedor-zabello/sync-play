@@ -1,4 +1,4 @@
-function extractVideoId(url) {
+export function extractVideoId(url) {
     let videoId = null;
     const urlPatterns = [
         /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]+)/, // youtu.be/<video_id>
@@ -16,5 +16,3 @@ function extractVideoId(url) {
 
     return videoId;
 }
-
-export { extractVideoId };
