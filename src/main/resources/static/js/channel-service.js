@@ -12,15 +12,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         const channelsList = document.getElementById('channels-list');
         channelsList.innerHTML = ''; // Clear existing items
 
+        let selectedChannel = null; // Keep track of the selected channel
+
         channels.forEach(channel => {
             const channelItem = document.createElement('a');
             channelItem.className = 'list-group-item list-group-item-action bg-dark text-light';
             channelItem.textContent = channel.name;
             channelItem.href = '#';
+
             channelItem.onclick = (event) => {
                 event.preventDefault();
+
+                // Remove 'active' class from the previously selected channel
+                if (selectedChannel) {
+                    selectedChannel.classList.remove('active');
+                }
+
+                // Add 'active' class to the current channel
+                channelItem.classList.add('active');
+                selectedChannel = channelItem; // Update the selected channel
+
                 loadChannelData(channel.id);
             };
+
             channelsList.appendChild(channelItem);
         });
     } else {

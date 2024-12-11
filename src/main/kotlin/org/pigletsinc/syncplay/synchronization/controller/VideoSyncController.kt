@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
-@RequestMapping("/api/v1/videos")
+@RequestMapping("/api/v1/synchronization")
 class VideoSyncController {
     @MessageMapping("/videoSync/{channelId}")
     @SendTo("/topic/videoSync/{channelId}")
