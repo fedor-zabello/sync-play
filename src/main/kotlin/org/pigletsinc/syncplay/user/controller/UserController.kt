@@ -26,7 +26,5 @@ class UserController(
     }
 
     @GetMapping("/me")
-    fun getLoggedInUserDto(principal: Principal): UserDto {
-        return userService.getUserDto(principal)
-    }
+    fun getLoggedInUserDto(principal: Principal): UserDto = userService.getUserDto(principal)
 }

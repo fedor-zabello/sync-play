@@ -25,7 +25,7 @@ class UserProfile(
     @JoinTable(
         name = "user_profile_channel",
         joinColumns = [JoinColumn(name = "user_profile_id")],
-        inverseJoinColumns = [JoinColumn(name = "channel_id")]
+        inverseJoinColumns = [JoinColumn(name = "channel_id")],
     )
     var channels: MutableSet<Channel> = mutableSetOf(),
 )

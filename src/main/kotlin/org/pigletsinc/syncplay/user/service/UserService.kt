@@ -46,11 +46,12 @@ class UserService(
     }
 
     fun getUserProfileByPrincipal(principal: Principal): UserProfile {
-        val userProfile = when (principal){
-            is UsernamePasswordAuthenticationToken -> userCredentialsRepository.findByEmailIgnoreCase(principal.name)?.userProfile
-            is OAuth2AuthenticationToken -> googleOauthRepository.findByOauthId(principal.name)?.userProfile
-            else -> throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")
-        }
+        val userProfile =
+            when (principal) {
+                is UsernamePasswordAuthenticationToken -> userCredentialsRepository.findByEmailIgnoreCase(principal.name)?.userProfile
+                is OAuth2AuthenticationToken -> googleOauthRepository.findByOauthId(principal.name)?.userProfile
+                else -> throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")
+            }
         return userProfile ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
     }
 

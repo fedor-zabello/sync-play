@@ -18,7 +18,6 @@ class CustomOAuth2UserService(
     private val googleOauthRepository: GoogleOauthRepository,
     private val userCredentialsRepository: UserCredentialsRepository,
 ) : OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-
     private val delegate = DefaultOAuth2UserService()
 
     @Transactional

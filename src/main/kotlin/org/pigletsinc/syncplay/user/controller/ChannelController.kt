@@ -10,11 +10,8 @@ import java.security.Principal
 @RestController
 @RequestMapping("/api/v1/channels")
 class ChannelController(
-    private val userChannelMembershipService: UserChannelMembershipService
+    private val userChannelMembershipService: UserChannelMembershipService,
 ) {
-
     @GetMapping()
-    fun getChannelMembershipByEmail(principal: Principal): List<ChannelDto> {
-        return userChannelMembershipService.getChannelsForUser(principal)
-    }
+    fun getChannelMembershipByEmail(principal: Principal): List<ChannelDto> = userChannelMembershipService.getChannelsForUser(principal)
 }

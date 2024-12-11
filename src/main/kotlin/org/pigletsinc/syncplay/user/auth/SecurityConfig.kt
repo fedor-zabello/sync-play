@@ -19,9 +19,12 @@ class SecurityConfig(
                 csrf.ignoringRequestMatchers("/api/v1/users/registration")
             }.authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/css/**", "/js/**").permitAll()
-                    .requestMatchers("/registration", "/api/v1/users/registration").permitAll()
-                    .anyRequest().authenticated()
+                    .requestMatchers("/css/**", "/js/**")
+                    .permitAll()
+                    .requestMatchers("/registration", "/api/v1/users/registration")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
             }.formLogin { form ->
                 form
                     .loginPage("/login")
