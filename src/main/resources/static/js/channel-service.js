@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         channels.forEach(channel => {
             const channelItem = document.createElement('a');
-            channelItem.className = 'list-group-item list-group-item-action bg-dark text-light';
+            // channelItem.className = 'list-group-flush list-group-item-action bg-dark text-light';
+            channelItem.className = 'list-group-item';
             channelItem.textContent = channel.name;
             channelItem.href = '#';
 

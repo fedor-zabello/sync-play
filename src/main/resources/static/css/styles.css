@@ -66,6 +66,7 @@ body {
 }
 
 .list-group-item.active {
-    background-color: var(--bs-dark) !important; /* Use Bootstrap's dark color variable */
+    background-color: #495057; /* Use Bootstrap's dark color variable */
     color: #fff !important; /* Ensure text remains visible */
+    border-color: #fff !important;
 }
