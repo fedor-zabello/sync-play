@@ -1,9 +1,9 @@
 .google-login {
     background-color: #4285F4;
-    border-color: #FFFFFF;
+    border: 1px solid #FFFFFF;
     color: #FFFFFF;
     font-weight: bold;
-    padding: 10px;
+    padding: 10px 20px;
     border-radius: 5px;
 }
 
@@ -13,7 +13,9 @@
 
 .google-login:hover {
     color: #FBBC05;  /* Change text to Google Red on hover */
+    background-color: #007bff;
 }
+
 #messageContainer {
     margin: 15px 0;
     text-align: center;
@@ -23,7 +25,7 @@
     display: none; /* Изначально скрыто */
 }
 
-.btn-outline-light:hover {
+.btn-light:hover {
     background-color: #007bff; /* Синий цвет наводки */
     color: white;
 }
@@ -37,9 +39,10 @@ body {
     background-color: #343a40;
     color: #f8f9fa;
 }
+
 .sidebar {
     height: 100vh;
-    background-color: #212529;
+    background-color: var(--bs-dark, #212529); /* Bootstrap's dark color */
     padding-top: 15px;
     overflow-y: auto;
 }
@@ -51,9 +54,11 @@ body {
     background-color: #495057;
     cursor: pointer;
 }
+
 .content {
     padding: 20px;
 }
+
 .header {
     background-color: #212529;
     padding: 10px 20px;
