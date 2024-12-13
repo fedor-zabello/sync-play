@@ -59,4 +59,6 @@ class UserService(
         val userProfile = getUserProfileByPrincipal(principal)
         return userProfile.toDto()
     }
+
+    fun saveUserProfile(userProfile: UserProfile) = userProfileRepository.save(userProfile)
 }

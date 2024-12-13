@@ -8,49 +8,53 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (response.ok) {
         const channels = await response.json();
-
-        const channelsList = document.getElementById('channels-list');
-        channelsList.innerHTML = ''; // Clear existing items
-
-        let selectedChannel = null; // Keep track of the selected channel
-
-        channels.forEach(channel => {
-            const channelItem = document.createElement('a');
-            // channelItem.className = 'list-group-flush list-group-item-action bg-dark text-light';
-            channelItem.className = 'list-group-item';
-            channelItem.textContent = channel.name;
-            channelItem.href = '#';
-
-            channelItem.onclick = (event) => {
-                event.preventDefault();
-
-                // Remove 'active' class from the previously selected channel
-                if (selectedChannel) {
-                    selectedChannel.classList.remove('active');
-                }
-
-                // Add 'active' class to the current channel
-                channelItem.classList.add('active');
-                selectedChannel = channelItem; // Update the selected channel
-
-                loadChannelData(channel.id);
-            };
-
-            channelsList.appendChild(channelItem);
-        });
+        initializeChannelsList(channels);
     } else {
         console.error('Failed to fetch channels');
     }
 });
 
+let selectedChannel = null;
+
+function initializeChannelsList(channels) {
+    const channelsList = document.getElementById('channels-list');
+    channelsList.innerHTML = '';
+
+    channels.forEach(channel => addChannelToList(channel));
+}
+
+// Add a channel to the list and handle its selection
+function addChannelToList(channel) {
+    const channelsList = document.getElementById('channels-list');
+    const channelItem = document.createElement('a');
+    channelItem.className = 'list-group-item';
+    channelItem.textContent = channel.name;
+    channelItem.href = '#';
+
+    channelItem.onclick = (event) => {
+        event.preventDefault();
+
+        // Remove 'active' class from the previously selected channel
+        if (selectedChannel) {
+            selectedChannel.classList.remove('active');
+        }
+
+        channelItem.classList.add('active');
+        selectedChannel = channelItem; // Update the selected channel
+
+        loadChannelData(channel.id);
+    };
+
+    channelsList.appendChild(channelItem);
+}
+
 // Function to handle channel click
 async function loadChannelData(channelId) {
-
     const youtubeContainer = document.getElementById('youtube-container');
 
     try {
         // Fetch the HTML content
-        const response = await fetch('/youtube-iframe'); // Adjust the path
+        const response = await fetch('/youtube-iframe');
         if (response.ok) {
             youtubeContainer.innerHTML = await response.text();
 
@@ -58,10 +62,8 @@ async function loadChannelData(channelId) {
             const loadButton = document.getElementById('load-video-button');
             loadButton.addEventListener('click', loadVideo);
 
-            // Ensure player is initialized after iframe is added
             initializeYouTubePlayer();
 
-            // Connect WebSocket (if not already connected)
             connect(channelId);
         } else {
             console.error('Failed to load YouTube iframe HTML');
@@ -69,4 +71,51 @@ async function loadChannelData(channelId) {
     } catch (error) {
         console.error('Error loading YouTube iframe HTML:', error);
     }
+}
+
+// Function to create a new channel
+async function createChannel(channelName) {
+    try {
+        const response = await fetch('/api/v1/channels', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': getCsrfToken()
+            },
+            body: JSON.stringify({ name: channelName })
+        });
+
+        if (response.ok) {
+            const newChannel = await response.json();
+            console.log('Channel created successfully:', newChannel);
+
+            addChannelToList(newChannel);
+
+            const channelsList = document.getElementById('channels-list');
+            const channelItems = channelsList.getElementsByClassName('list-group-item');
+            const newChannelItem = Array.from(channelItems).find(item => item.textContent === newChannel.name);
+
+            if (newChannelItem) {
+                newChannelItem.click(); // Trigger the click handler to activate the channel
+            }
+        } else {
+            console.error('Error creating channel:', response.status, response.statusText);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Event listener for "Create New Channel" button
+document.getElementById('create-channel-button').addEventListener('click', async () => {
+    const channelName = prompt('Enter a name for the new channel:');
+    if (channelName) {
+        await createChannel(channelName);
+    }
+});
+
+// Helper function to get CSRF token if needed
+function getCsrfToken() {
+    const csrfElement = document.querySelector('input[name="_csrf"]');
+    return csrfElement ? csrfElement.value : '';
 }
