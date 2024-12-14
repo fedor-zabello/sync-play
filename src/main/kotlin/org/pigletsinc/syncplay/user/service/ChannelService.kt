@@ -17,7 +17,11 @@ class ChannelService(
         val userProfile = userService.getUserProfileByPrincipal(principal)
         return userProfile.channels.map { it.toDto() }
     }
-    fun createChannelForUser(channelCreateDto: ChannelCreateDto, principal: Principal): ChannelDto {
+
+    fun createChannelForUser(
+        channelCreateDto: ChannelCreateDto,
+        principal: Principal,
+    ): ChannelDto {
         val userProfile = userService.getUserProfileByPrincipal(principal)
         val channel = channelRepository.save(Channel(name = channelCreateDto.name))
         userProfile.channels.add(channel)

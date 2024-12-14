@@ -16,11 +16,11 @@ class ChannelController(
     private val channelService: ChannelService,
 ) {
     @GetMapping()
-    fun getChannelMembershipByEmail(principal: Principal): List<ChannelDto> =
-        channelService.getChannelsForUser(principal)
+    fun getChannelMembershipByEmail(principal: Principal): List<ChannelDto> = channelService.getChannelsForUser(principal)
 
     @PostMapping
-    fun createChannel(@RequestBody dto: ChannelCreateDto, principal: Principal): ChannelDto {
-        return channelService.createChannelForUser(dto, principal)
-    }
+    fun createChannel(
+        @RequestBody dto: ChannelCreateDto,
+        principal: Principal,
+    ): ChannelDto = channelService.createChannelForUser(dto, principal)
 }
