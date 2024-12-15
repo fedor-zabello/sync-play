@@ -61,6 +61,11 @@ async function loadChannelData(channelId) {
         // Fetch the HTML content
         const response = await fetch('/youtube-iframe');
         if (response.ok) {
+
+            const headerContainer = document.getElementById("channel-header-container");
+            headerContainer.classList.replace("d-none", "d-flex")
+            document.getElementById('channel-header').textContent = selectedChannel.textContent;
+
             youtubeContainer.innerHTML = await response.text();
 
             // Bind the loadVideo function to the button
