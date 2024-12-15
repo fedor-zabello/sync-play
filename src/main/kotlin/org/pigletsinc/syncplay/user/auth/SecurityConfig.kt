@@ -28,12 +28,12 @@ class SecurityConfig(
             }.formLogin { form ->
                 form
                     .loginPage("/login")
-                    .defaultSuccessUrl("/watch", true)
+                    .defaultSuccessUrl("/home", true)
                     .permitAll()
             }.oauth2Login { oauth2 ->
                 oauth2
                     .loginPage("/login")
-                    .defaultSuccessUrl("/watch", true)
+                    .defaultSuccessUrl("/home", true)
                     .userInfoEndpoint { userInfo ->
                         userInfo.userService(customOAuth2UserService)
                     }

@@ -1,19 +1,40 @@
+import {loadVideoById, synchronizeVideo} from "./youtube-player.js";
+
 let stompClient = null;
-let player;
+let socket = null;
+
 let lock = false; // Flag to prevent sending sync messages during a sync event
 const clientId = Math.random().toString(36).substring(2, 15); // Unique client ID
 
+let currentChannelId = null;
+
 // Connect to the WebSocket server
-function connect() {
-    let socket = new SockJS('/ws');
+export function connect(channelId) {
+    // Close the current connection if it exists
+    if (stompClient !== null) {
+        console.log('Disconnecting from previous channel...');
+        stompClient.disconnect(() => {
+            console.log('Disconnected from previous channel.');
+        });
+        stompClient = null;
+    }
+
+    if (socket !== null) {
+        socket.close();
+        socket = null;
+    }
+
+    currentChannelId = channelId;
+
+    socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/videoSync', function (messageOutput) {
+        stompClient.subscribe('/topic/videoSync/' + currentChannelId, function (messageOutput) {
             let message = JSON.parse(messageOutput.body);
             handleSyncMessage(message);
         });
-        stompClient.subscribe('/topic/syncSource', function (syncSourceUrlOutput) {
+        stompClient.subscribe('/topic/syncSource/' + currentChannelId, function (syncSourceUrlOutput) {
             let syncSourceUrlMessage = JSON.parse(syncSourceUrlOutput.body);
             handleSourceUrlMessage(syncSourceUrlMessage);
         });
@@ -21,9 +42,9 @@ function connect() {
 }
 
 // Send a sync message with the current video state and clientId
-function sendSyncMessage(action, currentTime) {
+export function sendSyncMessage(action, currentTime) {
     if (stompClient && stompClient.connected) {
-        stompClient.send("/app/videoSync", {}, JSON.stringify({
+        stompClient.send("/app/videoSync/" + currentChannelId, {}, JSON.stringify({
             'action': action,
             'time': currentTime,
             'clientId': clientId
@@ -31,11 +52,10 @@ function sendSyncMessage(action, currentTime) {
     }
 }
 
-
 // Send a syncSourceUrlOutput message with the video url
-function sendSourceUrlSyncMessage(videoId) {
+export function sendSourceUrlSyncMessage(videoId) {
     if (stompClient && stompClient.connected) {
-        stompClient.send("/app/syncSource", {}, JSON.stringify({
+        stompClient.send("/app/syncSource/" + currentChannelId, {}, JSON.stringify({
             'videoId': videoId
         }));
     }
@@ -43,6 +63,12 @@ function sendSourceUrlSyncMessage(videoId) {
 
 // Handle sync messages received from the server
 function handleSyncMessage(message) {
+    if (lock) {
+        // Skip sending message if lock is true (i.e., during sync)
+        console.log("Skipping message due to lock");
+        return;
+    }
+
     if (message.clientId === clientId) {
         // Ignore messages from the same client
         return;
@@ -54,91 +80,10 @@ function handleSyncMessage(message) {
         lock = false; // Reset lock after 1s
     }, 1000);
 
-    // Handle 'play' and 'pause' actions
-    if (message.action === 'play') {
-        player.seekTo(message.time, true); // Synchronize time
-        player.playVideo();
-    } else if (message.action === 'pause') {
-        player.seekTo(message.time, true); // Synchronize time
-        player.pauseVideo();               // Pause the video
-    }
+    synchronizeVideo(message);
 }
+
 // Handle syncSourceUrl  messages received from the server
 function handleSourceUrlMessage(syncSourceUrlMessage) {
-    // Handle 'syncSourceUrlMessage'
-        player.loadVideoById(syncSourceUrlMessage.videoId);
-}
-
-// YouTube player state change handler
-function onPlayerStateChange(event) {
-    if (lock) {
-        // Skip sending message if lock is true (i.e., during sync)
-        console.log("Skipping message due to lock");
-        return;
-    }
-
-    // Send sync message if the state change is triggered by the user
-    if (event.data === YT.PlayerState.PLAYING) {
-        sendSyncMessage('play', player.getCurrentTime());
-    } else if (event.data === YT.PlayerState.PAUSED) {
-        sendSyncMessage('pause', player.getCurrentTime());
-    }
-}
-
-// Initialize the YouTube iframe player and hook into state change events
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        events: {
-            'onStateChange': onPlayerStateChange // Monitor player state changes
-        }
-    });
-}
-
-// Load the YouTube IFrame API dynamically
-function loadYouTubeAPI() {
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-}
-
-// Connect to WebSocket and load YouTube API on page load
-window.onload = function () {
-    connect();
-    loadYouTubeAPI();
-};
-
-// Load video based on the input URL
-function loadVideo() {
-    let videoUrl = document.getElementById('video-url').value;
-
-    // Extract video ID from YouTube URL
-    let videoId = extractVideoId(videoUrl);
-    if (videoId) {
-        // Update the iframe src with the new video ID
-        player.loadVideoById(videoId);
-    } else {
-        alert('Invalid YouTube URL');
-    }
-    sendSourceUrlSyncMessage(videoId);
-}
-
-// Extract video ID from different YouTube URL formats
-function extractVideoId(url) {
-    let videoId = null;
-    const urlPatterns = [
-        /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]+)/, // youtu.be/<video_id>
-        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/, // youtube.com/watch?v=<video_id>
-        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]+)/ // youtube.com/embed/<video_id>
-    ];
-
-    for (let pattern of urlPatterns) {
-        const match = url.match(pattern);
-        if (match && match[1]) {
-            videoId = match[1];
-            break;
-        }
-    }
-
-    return videoId;
+    loadVideoById(syncSourceUrlMessage.videoId)
 }

@@ -1,6 +1,7 @@
 package org.pigletsinc.syncplay.user.repository
 
 import org.assertj.core.api.Assertions.assertThat
+import org.pigletsinc.syncplay.user.entity.Channel
 import org.pigletsinc.syncplay.user.entity.GoogleOauth
 import org.pigletsinc.syncplay.user.entity.UserCredentials
 import org.pigletsinc.syncplay.user.entity.UserProfile
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 @DataJpaTest(excludeAutoConfiguration = [FlywayAutoConfiguration::class])
 class UserRepositoryTest
@@ -33,7 +35,8 @@ class UserRepositoryTest
         @Test
         fun `GoogleOauth is persisted correctly`() {
             val mrPigletProfile = UserProfile(name = "mr. Piglet")
-            val mrPigletGoogleOauth = GoogleOauth(oauthId = "oauth-id", email = "pig@let.com", userProfile = mrPigletProfile)
+            val mrPigletGoogleOauth =
+                GoogleOauth(oauthId = "oauth-id", email = "pig@let.com", userProfile = mrPigletProfile)
             entityManager.persist(mrPigletProfile)
             entityManager.persist(mrPigletGoogleOauth)
             entityManager.flush()
@@ -48,5 +51,22 @@ class UserRepositoryTest
             entityManager.flush()
             val foundProfile = userProfileRepository.findAll()
             assertThat(foundProfile).contains(mrPigletProfile)
+        }
+
+        @Test
+        fun `Channel memberships are persisted correctly`() {
+            val mrPigletProfile = UserProfile(name = "mr. Piglet")
+            val prawnsClubChannel = Channel(name = "prawns-club")
+
+            mrPigletProfile.channels.add(prawnsClubChannel)
+            prawnsClubChannel.userProfiles.add(mrPigletProfile)
+
+            entityManager.persist(prawnsClubChannel)
+            entityManager.persist(mrPigletProfile)
+
+            entityManager.flush()
+            val foundProfiles = userProfileRepository.findAll()
+            assertThat(foundProfiles).contains(mrPigletProfile)
+            assertTrue(foundProfiles[0].channels.contains(prawnsClubChannel))
         }
     }
