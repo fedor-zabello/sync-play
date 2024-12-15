@@ -2,8 +2,14 @@ import {connect} from "./web-socket.js";
 import {initializeYouTubePlayer, loadVideo} from "./youtube-player.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
+    await retrieveChannels()
+});
+
+let selectedChannel = null;
+
+async function retrieveChannels() {
     const response = await fetch('/api/v1/channels', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        headers: {'Authorization': `Bearer ${localStorage.getItem('authToken')}`}
     });
 
     if (response.ok) {
@@ -12,9 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
         console.error('Failed to fetch channels');
     }
-});
-
-let selectedChannel = null;
+}
 
 function initializeChannelsList(channels) {
     const channelsList = document.getElementById('channels-list');
@@ -30,6 +34,7 @@ function addChannelToList(channel) {
     channelItem.className = 'list-group-item';
     channelItem.textContent = channel.name;
     channelItem.href = '#';
+    channelItem.channelId = channel.id;
 
     channelItem.onclick = (event) => {
         event.preventDefault();
@@ -113,6 +118,26 @@ document.getElementById('create-channel-button').addEventListener('click', async
         await createChannel(channelName);
     }
 });
+
+document.getElementById('delete-channel-button').addEventListener('click', async () => {
+    try {
+        const channelId = selectedChannel.channelId;
+        const url = `/api/v1/channels/${channelId}`;
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': getCsrfToken()
+            }
+        });
+
+        if (response.ok) {
+            await retrieveChannels()
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+})
 
 // Helper function to get CSRF token if needed
 function getCsrfToken() {

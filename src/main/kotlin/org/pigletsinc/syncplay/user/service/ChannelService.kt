@@ -28,4 +28,8 @@ class ChannelService(
         userService.saveUserProfile(userProfile)
         return channel.toDto()
     }
+
+    fun deleteChannel(id: Long) {
+        channelRepository.deleteById(id)
+    }
 }

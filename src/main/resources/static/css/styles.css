@@ -12,7 +12,7 @@
 }
 
 .google-login:hover {
-    color: #FBBC05;  /* Change text to Google Red on hover */
+    color: #FBBC05; /* Change text to Google Red on hover */
     background-color: #007bff;
 }
 
@@ -46,13 +46,36 @@ body {
     padding-top: 15px;
     overflow-y: auto;
 }
+
 .sidebar .list-group-item {
     background-color: #212529;
     color: #f8f9fa;
 }
+
 .sidebar .list-group-item:hover {
     background-color: #495057;
     cursor: pointer;
+}
+
+#welcome-user-container {
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Stack the elements vertically */
+    align-items: center;
+    padding: 10px;
+}
+
+#welcome-user {
+    margin-bottom: 10px; /* Adds some space between the welcome message and the logout button */
+}
+
+#logout-button {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#welcome-user-container:hover #logout-button {
+    opacity: 1;
 }
 
 .content {
