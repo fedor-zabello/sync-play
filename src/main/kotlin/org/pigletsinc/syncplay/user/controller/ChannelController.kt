@@ -21,7 +21,9 @@ class ChannelController(
     fun getChannelMembershipByEmail(principal: Principal): List<ChannelDto> = channelService.getChannelsForUser(principal)
 
     @GetMapping("/{id}")
-    fun getChannelDetails(@PathVariable id: Long): ChannelDto = channelService.getChannelById(id)
+    fun getChannelDetails(
+        @PathVariable id: Long,
+    ): ChannelDto = channelService.getChannelById(id)
 
     @PostMapping
     fun createChannel(
@@ -30,5 +32,7 @@ class ChannelController(
     ): ChannelDto = channelService.createChannelForUser(dto, principal)
 
     @DeleteMapping("/{id}")
-    fun deleteChannel(@PathVariable id: Long) = channelService.deleteChannel(id)
+    fun deleteChannel(
+        @PathVariable id: Long,
+    ) = channelService.deleteChannel(id)
 }
