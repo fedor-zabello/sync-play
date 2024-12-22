@@ -3,6 +3,28 @@ import {extractVideoId} from "./videoUtils.js";
 
 let player = null;
 
+export async function loadPlayer() {
+    const youtubeContainer = document.getElementById('youtube-container');
+
+    try {
+        const response = await fetch('/youtube-iframe');
+        if (response.ok) {
+
+            youtubeContainer.innerHTML = await response.text();
+
+            // Bind the loadVideo function to the button
+            const loadButton = document.getElementById('load-video-button');
+            loadButton.addEventListener('click', loadVideo);
+
+            initializeYouTubePlayer();
+        } else {
+            console.error('Failed to load YouTube iframe HTML');
+        }
+    } catch (error) {
+        console.error('Error loading YouTube iframe HTML:', error);
+    }
+}
+
 // Initialize the YouTube player
 export function initializeYouTubePlayer() {
     player = new YT.Player('player', {

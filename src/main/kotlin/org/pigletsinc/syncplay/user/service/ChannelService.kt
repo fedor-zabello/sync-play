@@ -1,5 +1,6 @@
 package org.pigletsinc.syncplay.user.service
 
+import jakarta.persistence.EntityNotFoundException
 import org.pigletsinc.syncplay.user.ChannelCreateDto
 import org.pigletsinc.syncplay.user.ChannelDto
 import org.pigletsinc.syncplay.user.entity.Channel
@@ -16,6 +17,11 @@ class ChannelService(
     fun getChannelsForUser(principal: Principal): List<ChannelDto> {
         val userProfile = userService.getUserProfileByPrincipal(principal)
         return userProfile.channels.map { it.toDto() }
+    }
+
+    fun getChannelById(id: Long): ChannelDto {
+        var channel = channelRepository.findById(id).orElseThrow { EntityNotFoundException("Channel with id $id not found") }
+        return channel.toDto()
     }
 
     fun createChannelForUser(

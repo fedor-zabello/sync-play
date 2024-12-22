@@ -20,6 +20,9 @@ class ChannelController(
     @GetMapping()
     fun getChannelMembershipByEmail(principal: Principal): List<ChannelDto> = channelService.getChannelsForUser(principal)
 
+    @GetMapping("/{id}")
+    fun getChannelDetails(@PathVariable id: Long): ChannelDto = channelService.getChannelById(id)
+
     @PostMapping
     fun createChannel(
         @RequestBody dto: ChannelCreateDto,
