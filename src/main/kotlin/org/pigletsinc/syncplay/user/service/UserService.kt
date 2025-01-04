@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import java.security.Principal
+import java.util.Locale
 
 @Service
 class UserService(
@@ -38,7 +39,7 @@ class UserService(
 
         val userCredentials =
             UserCredentials(
-                email = userDto.email,
+                email = userDto.email.lowercase(Locale.getDefault()),
                 password = passwordEncoder.encode(userDto.password),
                 userProfile = userProfile,
             )
