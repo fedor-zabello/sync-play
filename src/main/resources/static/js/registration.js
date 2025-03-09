@@ -28,21 +28,21 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 if (data.message === "Registration successful") {
-                    displayMessage('Registration successful! Redirecting to login...');
+                    displayMessage('Registration successful! Redirecting to login...', 'success');
                     setTimeout(() => {
                         window.location.href = '/login';
                     }, 1500);
                 } else {
-                    displayMessage('Registration failed: ' + data.message);
+                    displayMessage('Registration failed: ' + data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error during registration:', error);
-                displayMessage(error.message || 'Something went wrong. Please try again.');
+                displayMessage(error.message || 'Something went wrong. Please try again.', 'error');
             });
     });
 
-    function displayMessage(message) {
+    function displayMessage(message, type = 'error') {
         if (!messageContainer) {
             console.warn("Message container not found on the page.");
             alert(message);
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         messageContainer.textContent = message;
+        messageContainer.className = `alert ${type === 'error' ? 'alert-danger' : 'alert-success'}`;
         messageContainer.style.display = 'block';
     }
 

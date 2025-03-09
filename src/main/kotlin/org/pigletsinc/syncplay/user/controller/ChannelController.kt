@@ -27,5 +27,7 @@ class ChannelController(
     ): ChannelDto = channelService.createChannelForUser(dto, principal)
 
     @DeleteMapping("/{id}")
-    fun deleteChannel(@PathVariable id: Long) = channelService.deleteChannel(id)
+    fun deleteChannel(
+        @PathVariable id: Long,
+    ) = channelService.deleteChannel(id)
 }
