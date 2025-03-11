@@ -1,7 +1,8 @@
 package org.pigletsinc.syncplay.user.service
 
 import org.pigletsinc.syncplay.user.UserDto
-import org.pigletsinc.syncplay.user.UserRegistrationDto
+import org.pigletsinc.syncplay.user.controller.dto.UserRegistrationDto
+import org.pigletsinc.syncplay.user.entity.Channel
 import org.pigletsinc.syncplay.user.entity.UserCredentials
 import org.pigletsinc.syncplay.user.entity.UserProfile
 import org.pigletsinc.syncplay.user.repository.GoogleOauthRepository
@@ -58,6 +59,15 @@ class UserService(
     fun getUserDto(principal: Principal): UserDto {
         val userProfile = getUserProfileByPrincipal(principal)
         return userProfile.toDto()
+    }
+
+    fun findUserProfileByName(username: String): UserProfile? {
+        return userProfileRepository.findByName(username).get()
+    }
+
+    fun addChannelSubscription(channel: Channel, userProfile: UserProfile) {
+        userProfile.channels.add(channel)
+        userProfileRepository.save(userProfile)
     }
 
     fun saveUserProfile(userProfile: UserProfile) = userProfileRepository.save(userProfile)

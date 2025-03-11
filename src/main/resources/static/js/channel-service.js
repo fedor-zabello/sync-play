@@ -1,6 +1,6 @@
 import {connect} from "./web-socket.js";
 import {loadPlayer} from "./youtube-player.js";
-import {createChannelOnBackend, deleteChannel, fetchChannelDetails, fetchChannels} from "./channel-api.js";
+import {createChannelOnBackend, deleteChannel, fetchChannelDetails, fetchChannels, renameChannel, inviteMembers} from "./channel-api.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     await retrieveChannels()
@@ -99,3 +99,50 @@ document.getElementById('delete-channel-button').addEventListener('click', async
             youtubeContainer.innerHTML = '';
         });
 })
+
+document.getElementById('change-channel-name-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const newName = document.getElementById('channel-name').value.trim();
+    
+    if (!newName) {
+        alert('Please enter a channel name');
+        return;
+    }
+
+    try {
+        await renameChannel(selectedChannel.channelId, newName);
+        // Update UI
+        selectedChannel.textContent = newName;
+        document.getElementById('channel-header').textContent = newName;
+        // Close modal
+        bootstrap.Modal.getInstance(document.getElementById('edit-channel-modal')).hide();
+        // Clear input
+        document.getElementById('channel-name').value = '';
+    } catch (error) {
+        alert('Failed to rename channel: ' + error.message);
+    }
+});
+
+document.getElementById('invite-members-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const usernames = document.getElementById('invite-members').value.trim();
+    
+    if (!usernames) {
+        alert('Please enter usernames');
+        return;
+    }
+
+    try {
+        await inviteMembers(selectedChannel.channelId, usernames);
+
+        bootstrap.Modal.getInstance(document.getElementById('edit-channel-modal')).hide();
+
+        document.getElementById('invite-members').value = '';
+
+        alert('Invitations sent successfully!');
+
+        await loadChannelData(selectedChannel.channelId);
+    } catch (error) {
+        alert('Failed to send invitations: ' + error.message);
+    }
+});
