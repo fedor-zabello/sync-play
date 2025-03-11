@@ -8,12 +8,11 @@ data class ChannelDto(
     val subscribersCount: Int,
 ) {
     companion object {
-        fun from(channel: Channel): ChannelDto {
-            return ChannelDto(
+        fun from(channel: Channel): ChannelDto =
+            ChannelDto(
                 id = channel.id,
                 name = channel.name,
-                subscribersCount = 0
+                subscribersCount = 0,
             )
-        }
     }
 }

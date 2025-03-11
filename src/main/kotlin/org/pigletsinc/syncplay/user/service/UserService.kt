@@ -62,11 +62,12 @@ class UserService(
         return userProfile.toDto()
     }
 
-    fun findUserProfileByName(username: String): UserProfile? {
-        return userProfileRepository.findByName(username).getOrNull()
-    }
+    fun findUserProfileByName(username: String): UserProfile? = userProfileRepository.findByName(username).getOrNull()
 
-    fun addChannelSubscription(channel: Channel, userProfile: UserProfile) {
+    fun addChannelSubscription(
+        channel: Channel,
+        userProfile: UserProfile,
+    ) {
         userProfile.channels.add(channel)
         userProfileRepository.save(userProfile)
     }

@@ -1,8 +1,8 @@
 package org.pigletsinc.syncplay.user.service
 
 import jakarta.persistence.EntityNotFoundException
-import org.pigletsinc.syncplay.user.controller.dto.ChannelCreateDto
 import org.pigletsinc.syncplay.user.ChannelDto
+import org.pigletsinc.syncplay.user.controller.dto.ChannelCreateDto
 import org.pigletsinc.syncplay.user.entity.Channel
 import org.pigletsinc.syncplay.user.exception.ChannelNotFoundException
 import org.pigletsinc.syncplay.user.repository.ChannelRepository
@@ -40,24 +40,34 @@ class ChannelService(
         channelRepository.deleteById(id)
     }
 
-    fun renameChannel(channelId: Long, newName: String): ChannelDto {
-        val channel = channelRepository.findById(channelId)
-            .orElseThrow { ChannelNotFoundException("Channel not found") }
-        
+    fun renameChannel(
+        channelId: Long,
+        newName: String,
+    ): ChannelDto {
+        val channel =
+            channelRepository
+                .findById(channelId)
+                .orElseThrow { ChannelNotFoundException("Channel not found") }
+
         channel.name = newName
         val savedChannel = channelRepository.save(channel)
         return ChannelDto.from(savedChannel)
     }
 
-    fun inviteMembers(channelId: Long, usernames: List<String>): ChannelDto {
-        val channel = channelRepository.findById(channelId)
-            .orElseThrow { ChannelNotFoundException("Channel not found") }
+    fun inviteMembers(
+        channelId: Long,
+        usernames: List<String>,
+    ): ChannelDto {
+        val channel =
+            channelRepository
+                .findById(channelId)
+                .orElseThrow { ChannelNotFoundException("Channel not found") }
 
         usernames
             .mapNotNull { username -> userService.findUserProfileByName(username) }
             .filter { userProfile -> !channel.userProfiles.contains(userProfile) }
             .forEach { userService.addChannelSubscription(channel, it) }
-        
+
         return ChannelDto.from(channel)
     }
 }
