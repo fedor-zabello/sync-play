@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import java.security.Principal
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UserService(
@@ -62,7 +63,7 @@ class UserService(
     }
 
     fun findUserProfileByName(username: String): UserProfile? {
-        return userProfileRepository.findByName(username).get()
+        return userProfileRepository.findByName(username).getOrNull()
     }
 
     fun addChannelSubscription(channel: Channel, userProfile: UserProfile) {
