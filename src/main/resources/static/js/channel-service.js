@@ -1,5 +1,6 @@
 import {connect} from "./web-socket.js";
-import {initializeYouTubePlayer, loadVideo} from "./youtube-player.js";
+import {loadPlayer} from "./youtube-player.js";
+import {createChannelOnBackend, deleteChannel, fetchChannelDetails, fetchChannels, renameChannel, inviteMembers} from "./channel-api.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     await retrieveChannels()
@@ -8,16 +9,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 let selectedChannel = null;
 
 async function retrieveChannels() {
-    const response = await fetch('/api/v1/channels', {
-        headers: {'Authorization': `Bearer ${localStorage.getItem('authToken')}`}
-    });
-
-    if (response.ok) {
-        const channels = await response.json();
-        initializeChannelsList(channels);
-    } else {
-        console.error('Failed to fetch channels');
-    }
+    fetchChannels()
+        .then(initializeChannelsList)
 }
 
 function initializeChannelsList(channels) {
@@ -39,7 +32,6 @@ function addChannelToList(channel) {
     channelItem.onclick = (event) => {
         event.preventDefault();
 
-        // Remove 'active' class from the previously selected channel
         if (selectedChannel) {
             selectedChannel.classList.remove('active');
         }
@@ -47,68 +39,47 @@ function addChannelToList(channel) {
         channelItem.classList.add('active');
         selectedChannel = channelItem; // Update the selected channel
 
-        loadChannelData(channel.id);
+        showChannelHeader()
+        loadChannelData(channel.id)
+        loadPlayer()
+        connect(channel.id)
     };
 
     channelsList.appendChild(channelItem);
 }
 
-// Function to handle channel click
-async function loadChannelData(channelId) {
-    const youtubeContainer = document.getElementById('youtube-container');
-
-    try {
-        // Fetch the HTML content
-        const response = await fetch('/youtube-iframe');
-        if (response.ok) {
-            youtubeContainer.innerHTML = await response.text();
-
-            // Bind the loadVideo function to the button
-            const loadButton = document.getElementById('load-video-button');
-            loadButton.addEventListener('click', loadVideo);
-
-            initializeYouTubePlayer();
-
-            connect(channelId);
-        } else {
-            console.error('Failed to load YouTube iframe HTML');
-        }
-    } catch (error) {
-        console.error('Error loading YouTube iframe HTML:', error);
-    }
+function showChannelHeader() {
+    const headerContainer = document.getElementById("channel-header-container");
+    headerContainer.classList.replace("d-none", "d-flex")
+    document.getElementById('channel-header').textContent = selectedChannel.textContent;
 }
 
-// Function to create a new channel
+function hideChannelHeader() {
+    const headerContainer = document.getElementById("channel-header-container");
+    headerContainer.classList.replace("d-flex", "d-none")
+}
+
+async function loadChannelData(channelId) {
+    const subscriberCountElement = document.getElementById('subscriber-count'); // Get the span element
+
+    fetchChannelDetails(channelId).then(channelData => {
+        const subscriberCount = channelData.subscribersCount;
+        subscriberCountElement.textContent = `${subscriberCount} subscribers`; // Update the text content
+    });
+}
+
 async function createChannel(channelName) {
-    try {
-        const response = await fetch('/api/v1/channels', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': getCsrfToken()
-            },
-            body: JSON.stringify({ name: channelName })
-        });
+    createChannelOnBackend(channelName).then(newChannel => {
+        addChannelToList(newChannel);
 
-        if (response.ok) {
-            const newChannel = await response.json();
-            console.log('Channel created successfully:', newChannel);
+        const channelsList = document.getElementById('channels-list');
+        const channelItems = channelsList.getElementsByClassName('list-group-item');
+        const newChannelItem = Array.from(channelItems).find(item => item.textContent === newChannel.name);
 
-            addChannelToList(newChannel);
-
-            const channelsList = document.getElementById('channels-list');
-            const channelItems = channelsList.getElementsByClassName('list-group-item');
-            const newChannelItem = Array.from(channelItems).find(item => item.textContent === newChannel.name);
-
-            if (newChannelItem) {
-                newChannelItem.click(); // Trigger the click handler to activate the channel
-            }
-        } else {
-            console.error('Error creating channel:', response.status, response.statusText);
+        if (newChannelItem) {
+            newChannelItem.click(); // Trigger the click handler to activate the channel
         }
-    } catch (error) {
-        console.error('Error:', error);
-    }
+    });
 }
 
 // Event listener for "Create New Channel" button
@@ -120,27 +91,58 @@ document.getElementById('create-channel-button').addEventListener('click', async
 });
 
 document.getElementById('delete-channel-button').addEventListener('click', async () => {
-    try {
-        const channelId = selectedChannel.channelId;
-        const url = `/api/v1/channels/${channelId}`;
-        const response = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': getCsrfToken()
-            }
+    deleteChannel(selectedChannel.channelId)
+        .then(retrieveChannels)
+        .then(hideChannelHeader)
+        .then(() => {
+            const youtubeContainer = document.getElementById('youtube-container');
+            youtubeContainer.innerHTML = '';
         });
-
-        if (response.ok) {
-            await retrieveChannels()
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
 })
 
-// Helper function to get CSRF token if needed
-function getCsrfToken() {
-    const csrfElement = document.querySelector('input[name="_csrf"]');
-    return csrfElement ? csrfElement.value : '';
-}
+document.getElementById('change-channel-name-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const newName = document.getElementById('channel-name').value.trim();
+    
+    if (!newName) {
+        alert('Please enter a channel name');
+        return;
+    }
+
+    try {
+        await renameChannel(selectedChannel.channelId, newName);
+        // Update UI
+        selectedChannel.textContent = newName;
+        document.getElementById('channel-header').textContent = newName;
+        // Close modal
+        bootstrap.Modal.getInstance(document.getElementById('edit-channel-modal')).hide();
+        // Clear input
+        document.getElementById('channel-name').value = '';
+    } catch (error) {
+        alert('Failed to rename channel: ' + error.message);
+    }
+});
+
+document.getElementById('invite-members-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const usernames = document.getElementById('invite-members').value.trim();
+    
+    if (!usernames) {
+        alert('Please enter usernames');
+        return;
+    }
+
+    try {
+        await inviteMembers(selectedChannel.channelId, usernames);
+
+        bootstrap.Modal.getInstance(document.getElementById('edit-channel-modal')).hide();
+
+        document.getElementById('invite-members').value = '';
+
+        alert('Invitations sent successfully!');
+
+        await loadChannelData(selectedChannel.channelId);
+    } catch (error) {
+        alert('Failed to send invitations: ' + error.message);
+    }
+});

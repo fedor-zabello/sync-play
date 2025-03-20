@@ -1,7 +1,8 @@
 package org.pigletsinc.syncplay.user.service
 
 import org.pigletsinc.syncplay.user.UserDto
-import org.pigletsinc.syncplay.user.UserRegistrationDto
+import org.pigletsinc.syncplay.user.controller.dto.UserRegistrationDto
+import org.pigletsinc.syncplay.user.entity.Channel
 import org.pigletsinc.syncplay.user.entity.UserCredentials
 import org.pigletsinc.syncplay.user.entity.UserProfile
 import org.pigletsinc.syncplay.user.repository.GoogleOauthRepository
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import java.security.Principal
-import java.util.Locale
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UserService(
@@ -39,7 +40,7 @@ class UserService(
 
         val userCredentials =
             UserCredentials(
-                email = userDto.email.lowercase(Locale.getDefault()),
+                email = userDto.email,
                 password = passwordEncoder.encode(userDto.password),
                 userProfile = userProfile,
             )
@@ -59,6 +60,16 @@ class UserService(
     fun getUserDto(principal: Principal): UserDto {
         val userProfile = getUserProfileByPrincipal(principal)
         return userProfile.toDto()
+    }
+
+    fun findUserProfileByName(username: String): UserProfile? = userProfileRepository.findByName(username).getOrNull()
+
+    fun addChannelSubscription(
+        channel: Channel,
+        userProfile: UserProfile,
+    ) {
+        userProfile.channels.add(channel)
+        userProfileRepository.save(userProfile)
     }
 
     fun saveUserProfile(userProfile: UserProfile) = userProfileRepository.save(userProfile)

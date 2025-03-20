@@ -7,7 +7,6 @@
 
     <link rel="apple-touch-icon" sizes="180x180" href="/favico/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favico/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favico/favicon-16x16.png">
     <link rel="manifest" href="/favico/site.webmanifest">
 
     <script type="module" src="/js/channel-service.js"></script>
@@ -45,18 +44,64 @@
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="col-md-9 col-lg-10 p-0 m-0">
-            <div class="header d-flex justify-content-between align-items-center">
-                <h5 id="channel-header">Channel</h5>
+            <div class="header d-none justify-content-between align-items-center" id="channel-header-container">
+                <div class="d-flex align-items-center">
+                    <!-- Clickable Channel Name -->
+                    <h5>
+                        <a href="#" id="channel-header" data-bs-toggle="modal" data-bs-target="#edit-channel-modal">
+                            Channel
+                        </a>
+                    </h5>
+                    <span class="badge bg-secondary ms-2" id="subscriber-count">0 subscribers</span>
+                </div>
                 <button class="btn btn-danger" id="delete-channel-button">
                     <i class="fa fa-trash-alt"></i> Delete channel
                 </button>
             </div>
 
-            <div class="content">
+            <div class="content" id="content-container">
                 <div id="youtube-container" class="text-center">
                     <h3 class="text-center">🐷</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Editing Channel -->
+<div class="modal fade" id="edit-channel-modal" tabindex="-1" aria-labelledby="edit-channel-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="edit-channel-modal-label">Edit Channel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Change Channel Name Section -->
+                <div class="mb-4">
+                    <h6>Change Channel Name</h6>
+                    <form id="change-channel-name-form">
+                        <div class="mb-3">
+                            <label for="channel-name" class="form-label">Channel Name</label>
+                            <input type="text" class="form-control" id="channel-name" placeholder="Enter new channel name">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Name</button>
+                    </form>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Invite New Members Section -->
+                <div class="mb-4">
+                    <h6>Invite New Members</h6>
+                    <form id="invite-members-form">
+                        <div class="mb-3">
+                            <label for="invite-members" class="form-label">Invite Members</label>
+                            <input type="text" class="form-control" id="invite-members" placeholder="Enter usernames separated by commas">
+                        </div>
+                        <button type="submit" class="btn btn-success">Send Invites</button>
+                    </form>
                 </div>
             </div>
         </div>

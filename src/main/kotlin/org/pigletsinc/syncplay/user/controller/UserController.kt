@@ -1,7 +1,7 @@
 package org.pigletsinc.syncplay.user.controller
 
 import org.pigletsinc.syncplay.user.UserDto
-import org.pigletsinc.syncplay.user.UserRegistrationDto
+import org.pigletsinc.syncplay.user.controller.dto.UserRegistrationDto
 import org.pigletsinc.syncplay.user.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

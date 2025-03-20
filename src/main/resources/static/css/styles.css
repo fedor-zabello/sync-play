@@ -93,3 +93,18 @@ body {
     color: #fff !important; /* Ensure text remains visible */
     border-color: #fff !important;
 }
+
+.modal-content {
+    background-color: #343a40;
+    color: #ffffff;
+    border: none;
+}
+.modal-header {
+    border-bottom: 1px solid #495057;
+}
+.modal-footer {
+    border-top: 1px solid #495057;
+}
+.btn-close {
+    filter: invert(1);
+}
