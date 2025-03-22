@@ -57,18 +57,12 @@ export function loadVideo() {
 }
 
 export function synchronizeVideo(synchronizeMessage) {
-    // First, ensure the player is available
     if (!player) {
         console.error("Player not initialized yet");
         return;
     }
 
-    console.log(`Synchronizing video to ${synchronizeMessage.action} at time ${synchronizeMessage.time}`);
-
-    // Make sure we're seeking to the correct time first
     player.seekTo(synchronizeMessage.time, true);
-
-    // Then apply the play/pause action with a slight delay to ensure the seek completes
     setTimeout(() => {
         if (synchronizeMessage.action === 'play') {
             console.log("Playing video");
