@@ -3,8 +3,11 @@ import {loadVideoById, synchronizeVideo} from "./youtube-player.js";
 let stompClient = null;
 let socket = null;
 
-let lock = false; // Flag to prevent sending sync messages during a sync event
-const clientId = Math.random().toString(36).substring(2, 15); // Unique client ID
+// Generate a unique client ID
+const clientId = Math.random().toString(36).substring(2, 15);
+
+// Keep track of message processing
+let processingMessage = false;
 
 let currentChannelId = null;
 
@@ -41,14 +44,15 @@ export function connect(channelId) {
     });
 }
 
-// Send a sync message with the current video state and clientId
+// Send a sync message with the current video state
 export function sendSyncMessage(action, currentTime) {
-    if (stompClient && stompClient.connected) {
+    if (stompClient && stompClient.connected && !processingMessage) {
         stompClient.send("/app/videoSync/" + currentChannelId, {}, JSON.stringify({
             'action': action,
             'time': currentTime,
             'clientId': clientId
         }));
+        console.log(`Sent ${action} message at time ${currentTime}`);
     }
 }
 
@@ -56,34 +60,40 @@ export function sendSyncMessage(action, currentTime) {
 export function sendSourceUrlSyncMessage(videoId) {
     if (stompClient && stompClient.connected) {
         stompClient.send("/app/syncSource/" + currentChannelId, {}, JSON.stringify({
-            'videoId': videoId
+            'videoId': videoId,
+            'clientId': clientId
         }));
     }
 }
 
 // Handle sync messages received from the server
 function handleSyncMessage(message) {
-    if (lock) {
-        // Skip sending message if lock is true (i.e., during sync)
-        console.log("Skipping message due to lock");
-        return;
-    }
-
+    // Always ignore messages from ourselves
     if (message.clientId === clientId) {
-        // Ignore messages from the same client
+        console.log("Ignoring own message");
         return;
     }
 
-    // Set lock to true to prevent sending more sync messages
-    lock = true;
-    setTimeout(() => {
-        lock = false; // Reset lock after 1s
-    }, 1000);
+    console.log(`Received ${message.action} message from ${message.clientId} at time ${message.time}`);
 
+    // Set the processing flag to prevent sending a response
+    processingMessage = true;
+
+    // Make sure the player properly responds to the message
     synchronizeVideo(message);
+
+    // Reset the processing flag after a short delay
+    setTimeout(() => {
+        processingMessage = false;
+    }, 2000); // 2-second delay before allowing new messages to be sent
 }
 
-// Handle syncSourceUrl  messages received from the server
+// Handle syncSourceUrl messages received from the server
 function handleSourceUrlMessage(syncSourceUrlMessage) {
-    loadVideoById(syncSourceUrlMessage.videoId)
+    // Ignore messages from the same client
+    if (syncSourceUrlMessage.clientId === clientId) {
+        return;
+    }
+
+    loadVideoById(syncSourceUrlMessage.videoId);
 }

@@ -57,13 +57,27 @@ export function loadVideo() {
 }
 
 export function synchronizeVideo(synchronizeMessage) {
-    if (synchronizeMessage.action === 'play') {
-        player.seekTo(synchronizeMessage.time, true);   // Synchronize time
-        player.playVideo();
-    } else if (synchronizeMessage.action === 'pause') {
-        player.seekTo(synchronizeMessage.time, true);   // Synchronize time
-        player.pauseVideo();                            // Pause the video
+    // First, ensure the player is available
+    if (!player) {
+        console.error("Player not initialized yet");
+        return;
     }
+
+    console.log(`Synchronizing video to ${synchronizeMessage.action} at time ${synchronizeMessage.time}`);
+
+    // Make sure we're seeking to the correct time first
+    player.seekTo(synchronizeMessage.time, true);
+
+    // Then apply the play/pause action with a slight delay to ensure the seek completes
+    setTimeout(() => {
+        if (synchronizeMessage.action === 'play') {
+            console.log("Playing video");
+            player.playVideo();
+        } else if (synchronizeMessage.action === 'pause') {
+            console.log("Pausing video");
+            player.pauseVideo();
+        }
+    }, 200);
 }
 
 export function loadVideoById(videoId) {
