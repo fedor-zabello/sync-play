@@ -57,13 +57,21 @@ export function loadVideo() {
 }
 
 export function synchronizeVideo(synchronizeMessage) {
-    if (synchronizeMessage.action === 'play') {
-        player.seekTo(synchronizeMessage.time, true);   // Synchronize time
-        player.playVideo();
-    } else if (synchronizeMessage.action === 'pause') {
-        player.seekTo(synchronizeMessage.time, true);   // Synchronize time
-        player.pauseVideo();                            // Pause the video
+    if (!player) {
+        console.error("Player not initialized yet");
+        return;
     }
+
+    player.seekTo(synchronizeMessage.time, true);
+    setTimeout(() => {
+        if (synchronizeMessage.action === 'play') {
+            console.log("Playing video");
+            player.playVideo();
+        } else if (synchronizeMessage.action === 'pause') {
+            console.log("Pausing video");
+            player.pauseVideo();
+        }
+    }, 200);
 }
 
 export function loadVideoById(videoId) {
