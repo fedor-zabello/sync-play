@@ -1,5 +1,6 @@
 package org.pigletsinc.syncplay.synchronization.controller
 
+import org.pigletsinc.syncplay.synchronization.model.ChannelState
 import org.pigletsinc.syncplay.synchronization.model.SourceUrlMessage
 import org.pigletsinc.syncplay.synchronization.model.VideoSyncMessage
 import org.springframework.messaging.handler.annotation.DestinationVariable
@@ -45,42 +46,17 @@ class VideoSyncController(
         return message
     }
 
-    // Optional: Periodic time sync for long-running videos
-//    @Scheduled(fixedRate = 10000) // Every 10 seconds
-//    fun sendTimeSyncUpdates() {
-//        println("Sending time sync updates. Channels=${channelStates.keys}")
-//        channelStates.forEach { (channelId, state) ->
-//            val syncMessage = VideoSyncMessage(
-//                action = state.action,
-//                time = state.getCurrentTime(),
-//                clientId = "SERVER"
-//            )
-//            // Send time sync message to clients
-//            simpMessagingTemplate.convertAndSend("/topic/videoSync/$channelId", syncMessage)
-//        }
-//    }
-}
-
-// State class to track channel information
-class ChannelState {
-    var action: String = "pause"
-    var time: Double = 0.0
-    var videoId: String? = null
-    var lastUpdateTime: Long = System.currentTimeMillis()
-
-    fun update(action: String?, time: Double?) {
-        if (action != null) this.action = action
-        if (time != null) this.time = time
-        this.lastUpdateTime = System.currentTimeMillis()
-    }
-
-    fun getCurrentTime(): Double {
-        return if (action == "play") {
-            // Calculate expected current time based on elapsed time
-            val elapsedSeconds = (System.currentTimeMillis() - lastUpdateTime) / 1000.0
-            time + elapsedSeconds
-        } else {
-            time
+    @Scheduled(fixedRate = 10000)
+    fun sendTimeSyncUpdates() {
+        channelStates.forEach { (channelId, state) ->
+            val syncMessage = VideoSyncMessage(
+                action = state.action,
+                time = state.getCurrentTime(),
+                clientId = "SERVER",
+                videoId = state.videoId,
+            )
+            // Send time sync message to clients
+            simpMessagingTemplate.convertAndSend("/topic/videoSync/$channelId", syncMessage)
         }
     }
 }

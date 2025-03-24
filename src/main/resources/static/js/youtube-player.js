@@ -2,6 +2,7 @@ import {sendSourceUrlSyncMessage, sendSyncMessage} from "./web-socket.js";
 import {extractVideoId} from "./videoUtils.js";
 
 let player = null;
+let currentVideoId = null;
 let ignorePlayerEvents = false;
 
 export async function loadPlayer() {
@@ -26,7 +27,6 @@ export async function loadPlayer() {
     }
 }
 
-// Initialize the YouTube player
 export function initializeYouTubePlayer() {
     player = new YT.Player('player', {
         events: {
@@ -47,33 +47,39 @@ function onPlayerStateChange(event) {
 }
 
 export function synchronizeVideo(syncState) {
-    console.log('synchronizeVideo', syncState);
-    // Get current player state and time
-    const currentTime = player.getCurrentTime();
+    const currentPlayerTime = player.getCurrentTime();
     const currentPlayerState = player.getPlayerState();
 
-    // Determine if the player is currently playing or paused
     const isCurrentlyPlaying = currentPlayerState === YT.PlayerState.PLAYING;
     const isCurrentlyPaused = currentPlayerState === YT.PlayerState.PAUSED;
 
-    const stateMatches = (syncState.action === "play" && isCurrentlyPlaying)
+    const playerStateMatches = (syncState.action === "play" && isCurrentlyPlaying)
         || (syncState.action === "pause" && isCurrentlyPaused);
 
-    const timeMatches = Math.abs(currentTime - syncState.time) <= 5;
+    const playerTimeMatches = Math.abs(currentPlayerTime - syncState.time) <= 5;
 
-    if (stateMatches && timeMatches) {
-
+    if (playerStateMatches && playerTimeMatches) {
+        // player is already on needed state. do nothing
     } else {
+        // we use this flag to ignore events from iframe, after external synchronization is proceeded
         ignorePlayerEvents = true;
+
         changePlayerState(syncState);
+
+        // after changing player state once, several events are generated in iframe.
+        // last of events can occur after 0.5 - 0.7 seconds approximately. that is why 1 second timeout is needed
         setTimeout(() => {
             ignorePlayerEvents = false;
-        }, 200);
+        }, 3000);
     }
 }
 
 function changePlayerState(syncState) {
-    console.log(`Seeking to ${syncState.time} and ${syncState.action}`);
+    console.log("changePlayerState ", syncState);
+    if (syncState.videoId !== currentVideoId) {
+        loadVideoById(syncState.videoId);
+    }
+
     player.seekTo(syncState.time, true);
     if (syncState.action === "play") {
         player.playVideo();
@@ -95,5 +101,6 @@ export function loadVideo() {
 }
 
 export function loadVideoById(videoId) {
+    currentVideoId = videoId;
     player.loadVideoById(videoId);
 }

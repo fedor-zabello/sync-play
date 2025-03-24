@@ -4,4 +4,5 @@ data class VideoSyncMessage(
     val action: String,
     val time: Double,
     val clientId: String,
+    val videoId: String?,
 )
