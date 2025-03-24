@@ -15,10 +15,8 @@ import java.util.concurrent.ConcurrentHashMap
 @Controller
 @RequestMapping("/api/v1/synchronization")
 class VideoSyncController(
-    // Inject the messaging template
     private val simpMessagingTemplate: SimpMessagingTemplate,
 ) {
-    // Store state for each channel
     private val channelStates = ConcurrentHashMap<String, ChannelState>()
 
     @MessageMapping("/videoSync/{channelId}")
