@@ -3,7 +3,6 @@ import {loadVideoById, synchronizeVideo} from "./youtube-player.js";
 let stompClient = null;
 let socket = null;
 
-// let processingMessage = false;
 const clientId = Math.random().toString(36).substring(2, 15);
 
 let currentChannelId = null;
