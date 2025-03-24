@@ -2,6 +2,7 @@ import {sendSourceUrlSyncMessage, sendSyncMessage} from "./web-socket.js";
 import {extractVideoId} from "./videoUtils.js";
 
 let player = null;
+let ignorePlayerEvents = false;
 
 export async function loadPlayer() {
     const youtubeContainer = document.getElementById('youtube-container');
@@ -34,13 +35,50 @@ export function initializeYouTubePlayer() {
     });
 }
 
-// YouTube player state change handler
 function onPlayerStateChange(event) {
-    // Send sync message if the state change is triggered by the user
-    if (event.data === YT.PlayerState.PLAYING) {
-        sendSyncMessage('play', player.getCurrentTime());
-    } else if (event.data === YT.PlayerState.PAUSED) {
-        sendSyncMessage('pause', player.getCurrentTime());
+    // Only process if it's a user action (not triggered by our code)
+    if (!ignorePlayerEvents) {
+        if (event.data === YT.PlayerState.PLAYING) {
+            sendSyncMessage('play', player.getCurrentTime());
+        } else if (event.data === YT.PlayerState.PAUSED) {
+            sendSyncMessage('pause', player.getCurrentTime());
+        }
+    }
+}
+
+export function synchronizeVideo(syncState) {
+    console.log('synchronizeVideo', syncState);
+    // Get current player state and time
+    const currentTime = player.getCurrentTime();
+    const currentPlayerState = player.getPlayerState();
+
+    // Determine if the player is currently playing or paused
+    const isCurrentlyPlaying = currentPlayerState === YT.PlayerState.PLAYING;
+    const isCurrentlyPaused = currentPlayerState === YT.PlayerState.PAUSED;
+
+    const stateMatches = (syncState.action === "play" && isCurrentlyPlaying)
+        || (syncState.action === "pause" && isCurrentlyPaused);
+
+    const timeMatches = Math.abs(currentTime - syncState.time) <= 5;
+
+    if (stateMatches && timeMatches) {
+
+    } else {
+        ignorePlayerEvents = true;
+        changePlayerState(syncState);
+        setTimeout(() => {
+            ignorePlayerEvents = false;
+        }, 200);
+    }
+}
+
+function changePlayerState(syncState) {
+    console.log(`Seeking to ${syncState.time} and ${syncState.action}`);
+    player.seekTo(syncState.time, true);
+    if (syncState.action === "play") {
+        player.playVideo();
+    } else if (syncState.action === "pause") {
+        player.pauseVideo();
     }
 }
 
@@ -54,24 +92,6 @@ export function loadVideo() {
         alert('Invalid YouTube URL');
     }
     sendSourceUrlSyncMessage(videoId);
-}
-
-export function synchronizeVideo(synchronizeMessage) {
-    if (!player) {
-        console.error("Player not initialized yet");
-        return;
-    }
-
-    player.seekTo(synchronizeMessage.time, true);
-    setTimeout(() => {
-        if (synchronizeMessage.action === 'play') {
-            console.log("Playing video");
-            player.playVideo();
-        } else if (synchronizeMessage.action === 'pause') {
-            console.log("Pausing video");
-            player.pauseVideo();
-        }
-    }, 200);
 }
 
 export function loadVideoById(videoId) {
