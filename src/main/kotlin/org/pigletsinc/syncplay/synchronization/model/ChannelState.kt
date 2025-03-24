@@ -7,19 +7,21 @@ class ChannelState {
     var videoId: String? = null
     var lastUpdateTime: Long = System.currentTimeMillis()
 
-    fun update(action: String?, time: Double?) {
+    fun update(
+        action: String?,
+        time: Double?,
+    ) {
         if (action != null) this.action = action
         if (time != null) this.time = time
         this.lastUpdateTime = System.currentTimeMillis()
     }
 
-    fun getCurrentTime(): Double {
-        return if (action == "play") {
+    fun getCurrentTime(): Double =
+        if (action == "play") {
             // Calculate expected current time based on elapsed time
             val elapsedSeconds = (System.currentTimeMillis() - lastUpdateTime) / 1000.0
             time + elapsedSeconds
         } else {
             time
         }
-    }
 }
