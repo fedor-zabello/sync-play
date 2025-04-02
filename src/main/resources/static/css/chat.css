@@ -1,0 +1,83 @@
+/* Контейнер чата */
+#chat-page {
+    position: relative;
+    height: 100%;
+    color: black !important; /* Принудительно черный текст */
+}
+
+/* Список сообщений */
+#chat-page ul {
+    list-style-type: none;
+    background-color: #FFF;
+    margin: 0;
+    padding: 0; /* Уменьшаем внутренние отступы */
+    height: calc(100% - 150px);
+    overflow-y: auto;
+}
+
+/* Блок сообщений */
+#messageArea {
+    list-style-type: none;
+    padding: 0; /* Уменьшаем внутренние отступы */
+    background-color: #f9f9f9; /* Светло-серый фон */
+    max-height: 400px;
+    overflow-y: auto;
+}
+#delete-channel-button {
+    display: flex; /* Используем flex для выравнивания содержимого */
+    align-items: center; /* Выравниваем содержимое по центру вертикально */
+    justify-content: center; /* Выравниваем содержимое по центру горизонтально */
+    padding: 6px 12px; /* Убедитесь, что отступы не слишком большие */
+    line-height: 1.5; /* Стандартное значение для выравнивания текста */
+}
+
+#delete-channel-button i {
+    margin-right: 6px; /* Отступ между иконкой и текстом */
+    font-size: 14px; /* Размер иконки */
+    vertical-align: middle; /* Выравниваем иконку по центру */
+}
+
+/* Сообщения в чате */
+.chat-message {
+    background-color: #e1f5fe; /* Светло-голубой фон */
+    color: black;
+    border-radius: 8px;
+    padding: 2px; /* Уменьшаем внутренние отступы */
+    margin: 2px 0; /* Уменьшаем внешние отступы */
+    display: flex;
+    flex-direction: column; /* Изменяем направление на столбец */
+}
+
+/* Контейнер для аватара и имени */
+.header {
+    display: flex; /* Выравниваем аватар и имя в строку */
+    align-items: center; /* Выравниваем по вертикали */
+    background-color: transparent; /* Удаляем фон */
+    border: none; /* Удаляем границы */
+    margin-bottom: 0; /* Удаляем отступ снизу */
+}
+
+.header i {
+    width: 20px; /* Уменьшаем размер аватара */
+    height: 20px;
+    border-radius: 50%;
+    background-color: #2196F3; /* Синий фон для аватара */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 5px; /* Уменьшаем отступ справа */
+}
+
+.header span {
+    font-weight: bold;
+    font-size: 14px; /* Уменьшаем размер имени */
+}
+
+.chat-message p {
+    font-size: 14px; /* Уменьшаем размер текста сообщения */
+    margin-top: 1px; /* Уменьшаем отступ сверху для текста */
+    margin-bottom: 0; /* Удаляем отступ снизу для текста */
+    margin-left: 25px; /* Добавляем отступ слева для текста */
+}

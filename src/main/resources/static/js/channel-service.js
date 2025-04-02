@@ -1,12 +1,14 @@
 import {connect} from "./web-socket.js";
-import {loadPlayer} from "./youtube-player.js";
+import {initializeYouTubePlayer, loadVideo} from "./youtube-player.js";
+import {initializeChat} from "./chat.js"; // Импортируем функцию инициализации чата
 import {createChannelOnBackend, deleteChannel, fetchChannelDetails, fetchChannels, renameChannel, inviteMembers} from "./channel-api.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await retrieveChannels()
+    await retrieveChannels();
 });
 
 let selectedChannel = null;
+let channelId = null; // Объявляем channelId
 
 async function retrieveChannels() {
     fetchChannels()
@@ -29,7 +31,7 @@ function addChannelToList(channel) {
     channelItem.href = '#';
     channelItem.channelId = channel.id;
 
-    channelItem.onclick = (event) => {
+    channelItem.onclick = async (event) => {
         event.preventDefault();
 
         if (selectedChannel) {
@@ -37,12 +39,13 @@ function addChannelToList(channel) {
         }
 
         channelItem.classList.add('active');
-        selectedChannel = channelItem; // Update the selected channel
+        selectedChannel = channelItem; // Обновляем выбранный канал
+        channelId = channelItem.channelId; // Обновляем идентификатор канала
 
-        showChannelHeader()
-        loadChannelData(channel.id)
-        loadPlayer()
-        connect(channel.id)
+        showChannelHeader();
+        await loadChannelData(channel.id);
+        initializeYouTubePlayer();
+        connect(channel.id); // Подключаем WebSocket только после выбора канала
     };
 
     channelsList.appendChild(channelItem);
@@ -50,22 +53,60 @@ function addChannelToList(channel) {
 
 function showChannelHeader() {
     const headerContainer = document.getElementById("channel-header-container");
-    headerContainer.classList.replace("d-none", "d-flex")
+    headerContainer.classList.replace("d-none", "d-flex");
     document.getElementById('channel-header').textContent = selectedChannel.textContent;
 }
 
 function hideChannelHeader() {
     const headerContainer = document.getElementById("channel-header-container");
-    headerContainer.classList.replace("d-flex", "d-none")
+    headerContainer.classList.replace("d-flex", "d-none");
 }
 
 async function loadChannelData(channelId) {
     const subscriberCountElement = document.getElementById('subscriber-count'); // Get the span element
+    const youtubeContainer = document.getElementById('youtube-container');
+
+    try {
+        const response = await fetch('/youtube-iframe');
+        if (response.ok) {
+            youtubeContainer.innerHTML = await response.text();
+
+            const loadButton = document.getElementById('load-video-button');
+            loadButton.addEventListener('click', loadVideo);
+
+            initializeYouTubePlayer();
+
+            connect(channelId);
+        } else {
+            console.error('❌ Ошибка загрузки YouTube iframe');
+        }
+    } catch (error) {
+        console.error('❌ Ошибка загрузки YouTube iframe:', error);
+    }
+
+    await loadChat();
 
     fetchChannelDetails(channelId).then(channelData => {
         const subscriberCount = channelData.subscribersCount;
         subscriberCountElement.textContent = `${subscriberCount} subscribers`; // Update the text content
     });
+}
+
+// Загружаем чат
+async function loadChat() {
+    const chatContainer = document.getElementById('chat-container');
+    try {
+        const response = await fetch('/chat-fragment');
+        if (response.ok) {
+            chatContainer.innerHTML = await response.text();
+            console.log("✅ Чат загружен, вызываем initializeChat()");
+            setTimeout(() => initializeChat(), 100); // Даем время на отрисовку
+        } else {
+            console.error('❌ Ошибка загрузки chat-fragment');
+        }
+    } catch (error) {
+        console.error('❌ Ошибка загрузки чата:', error);
+    }
 }
 
 async function createChannel(channelName) {
@@ -98,12 +139,12 @@ document.getElementById('delete-channel-button').addEventListener('click', async
             const youtubeContainer = document.getElementById('youtube-container');
             youtubeContainer.innerHTML = '';
         });
-})
+});
 
 document.getElementById('change-channel-name-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const newName = document.getElementById('channel-name').value.trim();
-    
+
     if (!newName) {
         alert('Please enter a channel name');
         return;
@@ -126,7 +167,7 @@ document.getElementById('change-channel-name-form').addEventListener('submit', a
 document.getElementById('invite-members-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const usernames = document.getElementById('invite-members').value.trim();
-    
+
     if (!usernames) {
         alert('Please enter usernames');
         return;
@@ -146,3 +187,5 @@ document.getElementById('invite-members-form').addEventListener('submit', async 
         alert('Failed to send invitations: ' + error.message);
     }
 });
+
+export { channelId }; // Экспортируем channelId
