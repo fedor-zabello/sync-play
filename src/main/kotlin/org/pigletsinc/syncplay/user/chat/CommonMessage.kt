@@ -12,7 +12,7 @@ import java.util.*
 
 open class CommonMessage(
     val messageId: UUID? = UUID.randomUUID(),
-    val channelId: Long?,
+//    val channelId: Long?,
     val sender: String?,
     val content: String?,
     @field:JsonSerialize(using = LocalDateTimeSerializer::class)

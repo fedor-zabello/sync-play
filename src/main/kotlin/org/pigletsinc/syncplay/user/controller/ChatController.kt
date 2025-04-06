@@ -6,14 +6,15 @@ import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.PathVariable
 
 
 @Controller
 class ChatController {
-    @MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/public")
-    fun sendMessage(@Payload chatMessage: CommonMessage): CommonMessage {
-        println("Получено сообщение: ${chatMessage.messageId}: ${chatMessage.sender}: ${chatMessage.content}")
+    @MessageMapping("/chat.sendMessage/{channelId}")
+    @SendTo("/topic/chat.sendMessage/{channelId}")
+    fun sendMessage(@PathVariable channelId: String, @Payload chatMessage: CommonMessage): CommonMessage {
+        println("Получено сообщение: ${channelId}: ${chatMessage.messageId}: ${chatMessage.sender}: ${chatMessage.content}")
         return chatMessage
     }
 

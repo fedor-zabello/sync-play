@@ -1,25 +1,29 @@
-import {loadVideoById, synchronizeVideo} from "./youtube-player.js";
+// web-socket.js
+import { loadVideoById, synchronizeVideo } from "./youtube-player.js";
 
-let stompClient = null;
+let stompClient = null; // Убираем дублирующее объявление ниже
 let socket = null;
-
-let processingMessage = false;
-const clientId = Math.random().toString(36).substring(2, 15);
-
+let subscriptions = {};
+let clientId = Math.random().toString(36).substring(2, 15);
 let currentChannelId = null;
 
-// Connect to the WebSocket server
 export function connect(channelId) {
-    // Close the current connection if it exists
-    if (stompClient !== null) {
-        console.log('Disconnecting from previous channel...');
+    if (currentChannelId === channelId && stompClient?.connected) {
+        console.log(`🔄 Уже подключено к каналу ${channelId}`);
+        return;
+    }
+
+    // отключаем старое подключение
+    if (stompClient) {
+        Object.values(subscriptions).forEach(sub => sub.unsubscribe());
+        subscriptions = {};
         stompClient.disconnect(() => {
-            console.log('Disconnected from previous channel.');
+            console.log('🔌 Отключено от предыдущего канала.');
         });
         stompClient = null;
     }
 
-    if (socket !== null) {
+    if (socket) {
         socket.close();
         socket = null;
     }
@@ -28,57 +32,88 @@ export function connect(channelId) {
 
     socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/videoSync/' + currentChannelId, function (messageOutput) {
+    stompClient.connect({}, frame => {
+        console.log('✅ Подключено: ' + frame);
+
+        // Подписка на видео-синхронизацию
+        subscriptions.video = stompClient.subscribe(`/topic/videoSync/${channelId}`, messageOutput => {
             let message = JSON.parse(messageOutput.body);
             handleSyncMessage(message);
         });
-        stompClient.subscribe('/topic/syncSource/' + currentChannelId, function (syncSourceUrlOutput) {
+
+        // Подписка на смену видео
+        subscriptions.source = stompClient.subscribe(`/topic/syncSource/${channelId}`, syncSourceUrlOutput => {
             let syncSourceUrlMessage = JSON.parse(syncSourceUrlOutput.body);
             handleSourceUrlMessage(syncSourceUrlMessage);
         });
+
+        // Подключение к чату, если callback уже задан
+        if (subscriptions.chatCallback) {
+            subscribeToChat(channelId, subscriptions.chatCallback);
+        }
     });
 }
 
+
+function handleSyncMessage(message) {
+    if (message.clientId === clientId) return;
+
+    synchronizeVideo(message);
+
+    setTimeout(() => {
+        // allow further sync messages
+    }, 2000);
+}
+
+function handleSourceUrlMessage(syncSourceUrlMessage) {
+    if (syncSourceUrlMessage.clientId === clientId) return;
+
+    loadVideoById(syncSourceUrlMessage.videoId);
+}
+
+// ✅ Чат-подписка должна быть здесь
+export function subscribeToChat(channelId, onMessageReceived) {
+    if (!stompClient || !stompClient.connected) {
+        console.warn("⚠️ stompClient еще не подключен. Подписка на чат отложена.");
+        subscriptions.chatCallback = onMessageReceived;
+        return;
+    }
+
+    if (subscriptions.chat) {
+        subscriptions.chat.unsubscribe();
+    }
+
+    subscriptions.chat = stompClient.subscribe(`/topic/chat.sendMessage/${channelId}`, onMessageReceived);
+}
+
 export function sendSyncMessage(action, currentTime) {
-    if (stompClient && stompClient.connected && !processingMessage) {
-        stompClient.send("/app/videoSync/" + currentChannelId, {}, JSON.stringify({
-            'action': action,
-            'time': currentTime,
-            'clientId': clientId
+    if (stompClient?.connected) {
+        stompClient.send(`/app/videoSync/${currentChannelId}`, {}, JSON.stringify({
+            action,
+            time: currentTime,
+            clientId
         }));
     }
 }
 
 export function sendSourceUrlSyncMessage(videoId) {
-    if (stompClient && stompClient.connected) {
-        stompClient.send("/app/syncSource/" + currentChannelId, {}, JSON.stringify({
-            'videoId': videoId,
-            'clientId': clientId
+    if (stompClient?.connected && currentChannelId) {
+        stompClient.send(`/app/syncSource/${currentChannelId}`, {}, JSON.stringify({
+            videoId,
+            clientId
         }));
+    } else {
+        console.warn("⚠️ Не удалось отправить syncSource сообщение — WebSocket не подключен.");
     }
 }
 
-function handleSyncMessage(message) {
-    // Always ignore messages from ourselves
-    if (message.clientId === clientId) {
-        return;
+export function sendChatMessage(channelId, chatMessage) {
+    if (stompClient?.connected && currentChannelId) {
+        stompClient.send(`/app/chat.sendMessage/${currentChannelId}`, {}, JSON.stringify(chatMessage));
+    } else {
+        console.warn("⚠️ Не удалось отправить чат-сообщение — WebSocket не подключен.");
     }
-    processingMessage = true;
-
-    synchronizeVideo(message);
-
-    setTimeout(() => {
-        processingMessage = false;
-    }, 2000); // 2-second delay before allowing new messages to be sent
 }
 
-function handleSourceUrlMessage(syncSourceUrlMessage) {
-    // Ignore messages from the same client
-    if (syncSourceUrlMessage.clientId === clientId) {
-        return;
-    }
-
-    loadVideoById(syncSourceUrlMessage.videoId);
-}
+// Экспортируем stompClient
+export { stompClient };

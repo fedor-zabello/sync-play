@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 let selectedChannel = null;
-let channelId = null; // Объявляем channelId
 
 async function retrieveChannels() {
     fetchChannels()
@@ -39,13 +38,12 @@ function addChannelToList(channel) {
         }
 
         channelItem.classList.add('active');
-        selectedChannel = channelItem; // Обновляем выбранный канал
-        channelId = channelItem.channelId; // Обновляем идентификатор канала
+        selectedChannel = channelItem; // Update the selected channel
 
         showChannelHeader();
         await loadChannelData(channel.id);
         initializeYouTubePlayer();
-        connect(channel.id); // Подключаем WebSocket только после выбора канала
+        connect(channel.id);
     };
 
     channelsList.appendChild(channelItem);
@@ -76,7 +74,7 @@ async function loadChannelData(channelId) {
 
             initializeYouTubePlayer();
 
-            connect(channelId);
+            connect(channelId);  // Подключение только после того, как данные канала загружены
         } else {
             console.error('❌ Ошибка загрузки YouTube iframe');
         }
@@ -84,7 +82,7 @@ async function loadChannelData(channelId) {
         console.error('❌ Ошибка загрузки YouTube iframe:', error);
     }
 
-    await loadChat();
+    await loadChat(channelId);  // Здесь уже точно передается channelId
 
     fetchChannelDetails(channelId).then(channelData => {
         const subscriberCount = channelData.subscribersCount;
@@ -92,15 +90,18 @@ async function loadChannelData(channelId) {
     });
 }
 
+
 // Загружаем чат
-async function loadChat() {
+async function loadChat(channelId) {
+    console.log("❓ Значение channelId в loadChat:", channelId); // Логирование channelId
+
     const chatContainer = document.getElementById('chat-container');
     try {
         const response = await fetch('/chat-fragment');
         if (response.ok) {
             chatContainer.innerHTML = await response.text();
             console.log("✅ Чат загружен, вызываем initializeChat()");
-            setTimeout(() => initializeChat(), 100); // Даем время на отрисовку
+            setTimeout(() => initializeChat(channelId), 100);
         } else {
             console.error('❌ Ошибка загрузки chat-fragment');
         }
@@ -108,6 +109,7 @@ async function loadChat() {
         console.error('❌ Ошибка загрузки чата:', error);
     }
 }
+
 
 async function createChannel(channelName) {
     createChannelOnBackend(channelName).then(newChannel => {
@@ -188,4 +190,3 @@ document.getElementById('invite-members-form').addEventListener('submit', async 
     }
 });
 
-export { channelId }; // Экспортируем channelId
