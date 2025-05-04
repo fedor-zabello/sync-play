@@ -107,7 +107,7 @@ export function sendSourceUrlSyncMessage(videoId) {
     }
 }
 
-export function sendChatMessage(channelId, chatMessage) {
+export function sendChatMessage(chatMessage) {
     if (stompClient?.connected && currentChannelId) {
         stompClient.send(`/app/chat.sendMessage/${currentChannelId}`, {}, JSON.stringify(chatMessage));
     } else {

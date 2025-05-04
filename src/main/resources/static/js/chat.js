@@ -19,12 +19,12 @@ export function initializeChat(channelId) {
 
     messageForm.addEventListener("submit", (event) => {
         event.preventDefault();
-        sendMessage(channelId);
+        sendMessage();
     });
 
     subscribeToChat(channelId, onMessageReceived);
 
-    function sendMessage(channelId) {
+    function sendMessage() {
         console.log("📩 Отправка сообщения...");
         console.log("❓ Значение channelId:", channelId);  // Добавьте это логирование
 
@@ -33,17 +33,17 @@ export function initializeChat(channelId) {
             console.log("✅ Проверяем состояние stompClient:", stompClient);
             console.log("✅ Проверяем подключение:", stompClient && stompClient.connected);
 
-            if (stompClient && stompClient.connected && channelId) {
+            if (stompClient && stompClient.connected) {
                 const chatMessage = {
                     sender: username,
                     content: messageContent,
                     type: "CHAT"
                 };
                 console.log("📤 Отправляем сообщение:", chatMessage);
-                sendChatMessage(channelId, chatMessage);
+                sendChatMessage(chatMessage);
                 messageInput.value = '';
             } else {
-                console.error("❌ WebSocket не подключен или channelId не определен.");
+                console.error("❌ WebSocket не подключен ");
                 if (!stompClient) {
                     console.error("❌ stompClient не существует!");
                 } else if (!stompClient.connected) {
@@ -62,11 +62,6 @@ export function initializeChat(channelId) {
     function onMessageReceived(payload) {
         console.log("📨 Получено сообщение через WebSocket:", payload.body);
         const message = JSON.parse(payload.body);
-
-        if (message.channelId !== channelId) {
-            console.log("📨 Сообщение предназначено для другого канала. channelId:", channelId);
-            return;
-        }
 
         const messageElement = document.createElement('li');
         messageElement.classList.add('chat-message');
