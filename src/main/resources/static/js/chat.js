@@ -26,13 +26,8 @@ export function initializeChat(channelId) {
 
     function sendMessage() {
         console.log("📩 Отправка сообщения...");
-        console.log("❓ Значение channelId:", channelId);  // Добавьте это логирование
-
         const messageContent = messageInput.value.trim();
         if (messageContent) {
-            console.log("✅ Проверяем состояние stompClient:", stompClient);
-            console.log("✅ Проверяем подключение:", stompClient && stompClient.connected);
-
             if (stompClient && stompClient.connected) {
                 const chatMessage = {
                     sender: username,
@@ -43,21 +38,26 @@ export function initializeChat(channelId) {
                 sendChatMessage(chatMessage);
                 messageInput.value = '';
             } else {
-                console.error("❌ WebSocket не подключен ");
-                if (!stompClient) {
-                    console.error("❌ stompClient не существует!");
-                } else if (!stompClient.connected) {
-                    console.error("❌ stompClient не подключен!");
-                }
-                if (!channelId) {
-                    console.error("❌ channelId не определен!");
-                }
+                console.error("❌ WebSocket не подключен или stompClient не существует");
             }
         } else {
             console.error("❌ Сообщение пустое.");
         }
     }
 
+    function scrollToBottom() {
+        messageArea.scrollTop = messageArea.scrollHeight;
+    }
+
+    function debounce(func, wait = 100) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    const debouncedScrollToBottom = debounce(scrollToBottom, 100);
 
     function onMessageReceived(payload) {
         console.log("📨 Получено сообщение через WebSocket:", payload.body);
@@ -93,7 +93,8 @@ export function initializeChat(channelId) {
             messageElement.appendChild(textElement);
         }
 
-        messageArea.prepend(messageElement);
+        messageArea.appendChild(messageElement);
+        debouncedScrollToBottom(); // скроллим вниз после каждого сообщения
     }
 }
 

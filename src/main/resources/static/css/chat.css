@@ -1,83 +1,97 @@
-/* Контейнер чата */
+/* Контейнер всего чата: flex-колонка, чтобы можно было фиксировать форму внизу */
 #chat-page {
     position: relative;
     height: 100%;
-    color: black !important; /* Принудительно черный текст */
+    color: black !important;
+    display: flex;
+    flex-direction: column;
+    background-color: transparent; /* прозрачный фон, чтобы не было белого */
 }
 
-/* Список сообщений */
-#chat-page ul {
-    list-style-type: none;
-    background-color: #FFF;
-    margin: 0;
-    padding: 0; /* Уменьшаем внутренние отступы */
-    height: calc(100% - 150px);
-    overflow-y: auto;
-}
-
-/* Блок сообщений */
+/* Контейнер сообщений - занимает всё доступное пространство сверху формы */
+#chat-page ul,
 #messageArea {
     list-style-type: none;
-    padding: 0; /* Уменьшаем внутренние отступы */
-    background-color: #f9f9f9; /* Светло-серый фон */
-    max-height: 400px;
+    background-color: transparent; /* прозрачный, сливается с подложкой */
+    margin: 0;
+    padding: 0 6px;
+    flex: 1; /* занимает всё пространство между шапкой и формой */
     overflow-y: auto;
-}
-#delete-channel-button {
-    display: flex; /* Используем flex для выравнивания содержимого */
-    align-items: center; /* Выравниваем содержимое по центру вертикально */
-    justify-content: center; /* Выравниваем содержимое по центру горизонтально */
-    padding: 6px 12px; /* Убедитесь, что отступы не слишком большие */
-    line-height: 1.5; /* Стандартное значение для выравнивания текста */
+    word-wrap: break-word;
 }
 
-#delete-channel-button i {
-    margin-right: 6px; /* Отступ между иконкой и текстом */
-    font-size: 14px; /* Размер иконки */
-    vertical-align: middle; /* Выравниваем иконку по центру */
-}
-
-/* Сообщения в чате */
+/* Сообщения */
 .chat-message {
-    background-color: #e1f5fe; /* Светло-голубой фон */
+    background-color: #e1f5fe;
     color: black;
     border-radius: 8px;
-    padding: 2px; /* Уменьшаем внутренние отступы */
-    margin: 2px 0; /* Уменьшаем внешние отступы */
+    padding: 4px 6px;
+    margin: 4px 0;
     display: flex;
-    flex-direction: column; /* Изменяем направление на столбец */
+    flex-direction: column;
 }
 
-/* Контейнер для аватара и имени */
-.header {
-    display: flex; /* Выравниваем аватар и имя в строку */
-    align-items: center; /* Выравниваем по вертикали */
-    background-color: transparent; /* Удаляем фон */
-    border: none; /* Удаляем границы */
-    margin-bottom: 0; /* Удаляем отступ снизу */
+/* Хедер аватар + имя */
+.chat-message .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+    background: none;
+    border: none;
 }
 
-.header i {
-    width: 20px; /* Уменьшаем размер аватара */
+.chat-message .header i {
+    width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: #2196F3; /* Синий фон для аватара */
+    background-color: #2196F3;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    margin-right: 5px; /* Уменьшаем отступ справа */
+    margin-right: 5px;
+    font-size: 12px;
 }
 
-.header span {
+.chat-message .header span {
     font-weight: bold;
-    font-size: 14px; /* Уменьшаем размер имени */
+    font-size: 13px;
 }
 
+/* Текст сообщения */
 .chat-message p {
-    font-size: 14px; /* Уменьшаем размер текста сообщения */
-    margin-top: 1px; /* Уменьшаем отступ сверху для текста */
-    margin-bottom: 0; /* Удаляем отступ снизу для текста */
-    margin-left: 25px; /* Добавляем отступ слева для текста */
+    font-size: 13px;
+    margin: 0;
+    margin-left: 25px;
+}
+
+/* Форма отправки сообщения — фиксирована снизу и с прозрачным фоном */
+.fixed-form {
+    display: flex;
+    padding: 6px;
+    gap: 5px;
+    border-top: 1px solid #ccc;
+    background-color: transparent !important; /* прозрачный фон */
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+}
+
+/* Инпут и кнопка */
+.fixed-form input[type="text"] {
+    flex: 1;
+    background-color: #fff; /* белый фон у поля ввода для читаемости */
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 6px 8px;
+}
+
+.fixed-form button.primary {
+    background-color: #2196F3;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
 }
