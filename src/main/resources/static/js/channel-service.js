@@ -1,6 +1,6 @@
 import {connect} from "./web-socket.js";
-import {initializeYouTubePlayer, loadVideo} from "./youtube-player.js";
-import {initializeChat} from "./chat.js"; // Импортируем функцию инициализации чата
+import {loadPlayer} from "./youtube-player.js";
+import {initializeChat} from "./chat.js";
 import {createChannelOnBackend, deleteChannel, fetchChannelDetails, fetchChannels, renameChannel, inviteMembers} from "./channel-api.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -42,7 +42,7 @@ function addChannelToList(channel) {
 
         showChannelHeader();
         await loadChannelData(channel.id);
-        initializeYouTubePlayer();
+        loadPlayer();
         connect(channel.id);
     };
 
@@ -61,7 +61,7 @@ function hideChannelHeader() {
 }
 
 async function loadChannelData(channelId) {
-    const subscriberCountElement = document.getElementById('subscriber-count'); // Get the span element
+    const subscriberCountElement = document.getElementById('subscriber-count');
     const youtubeContainer = document.getElementById('youtube-container');
 
     try {
@@ -71,10 +71,7 @@ async function loadChannelData(channelId) {
 
             const loadButton = document.getElementById('load-video-button');
             loadButton.addEventListener('click', loadVideo);
-
-            initializeYouTubePlayer();
-
-            connect(channelId);  // Подключение только после того, как данные канала загружены
+            connect(channelId);
         } else {
             console.error('❌ Ошибка загрузки YouTube iframe');
         }
@@ -82,18 +79,16 @@ async function loadChannelData(channelId) {
         console.error('❌ Ошибка загрузки YouTube iframe:', error);
     }
 
-    await loadChat(channelId);  // Здесь уже точно передается channelId
+    await loadChat(channelId);
 
     fetchChannelDetails(channelId).then(channelData => {
         const subscriberCount = channelData.subscribersCount;
-        subscriberCountElement.textContent = `${subscriberCount} subscribers`; // Update the text content
+        subscriberCountElement.textContent = `${subscriberCount} subscribers`;
     });
 }
 
-
-// Загружаем чат
 async function loadChat(channelId) {
-    console.log("❓ Значение channelId в loadChat:", channelId); // Логирование channelId
+    console.log("❓ Значение channelId в loadChat:", channelId);
 
     const chatContainer = document.getElementById('chat-container');
     try {
@@ -120,7 +115,7 @@ async function createChannel(channelName) {
         const newChannelItem = Array.from(channelItems).find(item => item.textContent === newChannel.name);
 
         if (newChannelItem) {
-            newChannelItem.click(); // Trigger the click handler to activate the channel
+            newChannelItem.click();
         }
     });
 }
