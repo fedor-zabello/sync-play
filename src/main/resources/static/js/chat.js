@@ -46,7 +46,10 @@ export function initializeChat(channelId) {
     }
 
     function scrollToBottom() {
-        messageArea.scrollTop = messageArea.scrollHeight;
+        const messageArea = document.getElementById('messageArea');
+        if (messageArea) {
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
     }
 
     function debounce(func, wait = 100) {
