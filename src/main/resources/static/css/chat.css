@@ -1,9 +1,9 @@
 /* Контейнер всего чата */
 #chat-page {
   position: fixed;
-  top: 0;
+  top: 60px; /* высота header, сдвигаем чат вниз */
   right: 0;
-  height: 100vh;
+  height: calc(100vh - 60px); /* высота экрана минус высота header */
   width: 320px;
   color: black !important;
   display: flex;
@@ -89,6 +89,7 @@
   background-image: none !important; /* убираем фон-изображение */
   box-sizing: border-box;
   gap: 5px;
+  flex-shrink: 0; /* чтобы форма не сжималась */
 }
 
 /* Поле ввода */
@@ -111,13 +112,3 @@
   color: white;
   padding: 0 16px;
   border-radius: 4px;
-  cursor: pointer;
-  height: 36px;
-  font-size: 13px;
-  transition: background-color 0.3s ease;
-  background-image: none !important;
-}
-
-.fixed-form button.primary:hover {
-  background-color: #1976d2;
-}
