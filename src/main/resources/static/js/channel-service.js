@@ -184,4 +184,3 @@ document.getElementById('invite-members-form').addEventListener('submit', async 
         alert('Failed to send invitations: ' + error.message);
     }
 });
-

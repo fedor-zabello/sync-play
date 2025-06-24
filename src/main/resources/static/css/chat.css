@@ -1,114 +1,128 @@
 /* Контейнер всего чата */
 #chat-page {
-  position: fixed;
-  top: 60px; /* высота header, сдвигаем чат вниз */
-  right: 0;
+  position: fixed; /* фиксированное позиционирование на экране */
+  top: 60px; /* отступ сверху, чтобы не перекрывать header */
+  right: 0; /* прижать к правому краю окна */
   height: calc(100vh - 60px); /* высота экрана минус высота header */
-  width: 320px;
-  color: black !important;
-  display: flex;
-  flex-direction: column;
-  background-color: transparent !important; /* убран фон */
-  border-left: 1px solid #ccc;
-  box-sizing: border-box;
-  z-index: 9999;
-  overflow: hidden;
-  background-image: none !important; /* убираем возможный фон-изображение */
+  width: 320px; /* фиксированная ширина чата */
+  color: black !important; /* цвет текста */
+  display: flex; /* flex-контейнер для вертикального расположения */
+  flex-direction: column; /* расположение элементов сверху вниз */
+  background-color: transparent !important; /* прозрачный фон */
+  border-left: 1px solid #ccc; /* левая граница для отделения */
+  box-sizing: border-box; /* учитываем padding и border в ширине/высоте */
+  z-index: 9999; /* поверх других элементов */
+  overflow: hidden; /* скрыть выходящее за пределы содержимое */
+  background-image: none !important; /* убрать фон-изображение */
 }
 
 /* Список сообщений */
+/* Список сообщений */
 #messageArea {
-  flex-grow: 1;
-  overflow-y: auto;
-  margin: 0;
-  padding: 0 6px;
-  list-style: none;
-  background-color: transparent !important; /* убран фон */
-  background-image: none !important; /* убираем фон-изображение */
-  word-wrap: break-word;
+  display: flex; /* flex-контейнер для сообщений */
+  flex-direction: column; /* сообщения идут сверху вниз */
+  justify-content: flex-end; /* !!! ЭТО ВАЖНО: прижать содержимое к нижнему краю !!! */
+  overflow-y: auto; /* вертикальная прокрутка при переполнении */
+  margin: 0; /* убрать внешние отступы */
+  padding: 0 6px; /* горизонтальные внутренние отступы */
+  list-style: none; /* убрать маркеры списка */
+  background-color: transparent !important; /* прозрачный фон */
+  background-image: none !important; /* убрать фон-изображение */
+  word-wrap: break-word; /* перенос длинных слов */
+  flex-grow: 1; /* занимает всё доступное пространство по высоте */
 }
+
 
 /* Сообщения */
 .chat-message {
-  background-color: #e1f5fe; /* цвет сообщений оставляем */
-  color: black;
-  border-radius: 6px;
-  padding: 0px 4px;
-  margin: 0px 0;
-  display: flex;
-  flex-direction: column;
+  background-color: #212529; /* цвет фона сообщения */
+  color: #f8f9fa; /* цвет текста */
+  border-radius: 6px; /* скругление углов */
+  padding-top: 2px;     /* верхний отступ */
+  padding-right: 6px;   /* правый отступ */
+  padding-bottom: 2px;  /* уменьшенный нижний отступ */
+  padding-left: 6px;    /* левый отступ */
+  margin: 2px 0; /* вертикальный отступ между сообщениями */
+  display: flex; /* flex-контейнер для содержимого сообщения */
+  flex-direction: column; /* расположение элементов внутри сообщения сверху вниз */
+  font-size: 13px; /* размер шрифта */
+  line-height: 1.2; /* межстрочный интервал */
 }
 
 /* Хедер аватар + имя */
 .chat-message .header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1px;
-  background: none;
-  border: none;
-  padding-left: 0;
+  display: flex; /* flex-контейнер для аватара и имени */
+  align-items: center; /* вертикальное выравнивание по центру */
+  margin-bottom: 1px; /* отступ снизу для отделения от текста */
+  background: none; /* убрать фон */
+  border: none; /* убрать рамки */
+  padding-left: 0; /* убрать левый padding */
+  font-size: 12px; /* размер шрифта имени */
 }
 
 /* Иконки у отправителей */
 .chat-message .header i {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background-color: #2196F3;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-right: 4px;
-  font-size: 11px;
+  width: 18px; /* ширина аватара */
+  height: 18px; /* высота аватара */
+  border-radius: 50%; /* круглые аватары */
+  background-color: #2196F3; /* синий фон */
+  color: white; /* белый цвет иконки */
+  display: flex; /* flex для центрирования содержимого */
+  align-items: center; /* вертикальное центрирование */
+  justify-content: center; /* горизонтальное центрирование */
+  font-weight: bold; /* жирный шрифт */
+  margin-right: 3px; /* отступ справа от аватара */
+  font-size: 11px; /* размер шрифта внутри аватара */
 }
 
 /* Имя отправителя */
 .chat-message .header span {
-  font-weight: bold;
-  font-size: 12px;
-  padding-left: 0;
+  font-weight: bold; /* жирное начертание */
+  font-size: 12px; /* размер шрифта */
+  padding-left: 0; /* убрать левый padding */
 }
 
 /* Вложенный контейнер для сообщений и формы */
 .chat-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background-color: transparent !important; /* убран фон */
-  background-image: none !important; /* убираем фон-изображение */
+  display: flex; /* flex-контейнер */
+  flex-direction: column; /* расположение сверху вниз */
+  height: 100%; /* занимает всю высоту родителя */
+  background-color: transparent !important; /* прозрачный фон */
+  background-image: none !important; /* убрать фон-изображение */
 }
 
 /* Форма отправки — НЕ абсолютная, занимает место в потоке */
 .fixed-form {
-  display: flex;
-  padding: 6px;
-  border-top: 1px solid #ccc;
-  background-color: transparent !important; /* убран фон */
-  background-image: none !important; /* убираем фон-изображение */
-  box-sizing: border-box;
-  gap: 5px;
-  flex-shrink: 0; /* чтобы форма не сжималась */
+  display: flex; /* flex-контейнер для элементов формы */
+  padding: 6px; /* внутренние отступы */
+  border-top: 1px solid #ccc; /* верхняя граница */
+  background-color: transparent !important; /* прозрачный фон */
+  background-image: none !important; /* убрать фон-изображение */
+  box-sizing: border-box; /* учитываем padding и border */
+  gap: 5px; /* промежуток между элементами */
+  flex-shrink: 0; /* не сжимается при нехватке места */
 }
 
 /* Поле ввода */
 .fixed-form input[type="text"] {
-  flex-grow: 1;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  padding: 6px 8px;
-  height: 36px;
-  font-size: 13px;
-  box-sizing: border-box;
-  background-color: #fff; /* оставляем белый фон поля ввода */
-  background-image: none !important;
+  flex-grow: 1; /* занимает доступное пространство */
+  border-radius: 4px; /* скругление углов */
+  border: 1px solid #ccc; /* рамка поля */
+  padding: 6px 8px; /* внутренние отступы */
+  height: 36px; /* высота поля */
+  font-size: 13px; /* размер шрифта */
+  box-sizing: border-box; /* учитываем padding и border */
+  background-color: #fff; /* белый фон */
+  background-image: none !important; /* убрать фон-изображение */
 }
 
 /* Кнопка отправки */
 .fixed-form button.primary {
-  background-color: #2196F3;
-  border: none;
-  color: white;
-  padding: 0 16px;
-  border-radius: 4px;
+  background-color: #2196F3; /* синий фон кнопки */
+  border: none; /* без рамки */
+  color: white; /* белый цвет текста */
+  padding: 0 16px; /* горизонтальные отступы */
+  height: 36px; /* высота кнопки */
+  border-radius: 4px; /* скругление углов */
+  cursor: pointer; /* курсор в виде руки при наведении */
+}

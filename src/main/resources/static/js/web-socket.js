@@ -115,5 +115,4 @@ export function sendChatMessage(chatMessage) {
     }
 }
 
-// Экспортируем stompClient
 export { stompClient };
