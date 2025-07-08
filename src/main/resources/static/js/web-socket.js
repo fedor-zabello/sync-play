@@ -3,7 +3,6 @@ import {loadVideoById, synchronizeVideo} from "./youtube-player.js";
 let stompClient = null;
 let socket = null;
 
-let processingMessage = false;
 const clientId = Math.random().toString(36).substring(2, 15);
 
 let currentChannelId = null;
@@ -42,7 +41,7 @@ export function connect(channelId) {
 }
 
 export function sendSyncMessage(action, currentTime) {
-    if (stompClient && stompClient.connected && !processingMessage) {
+    if (stompClient && stompClient.connected) {
         stompClient.send("/app/videoSync/" + currentChannelId, {}, JSON.stringify({
             'action': action,
             'time': currentTime,
@@ -65,13 +64,7 @@ function handleSyncMessage(message) {
     if (message.clientId === clientId) {
         return;
     }
-    processingMessage = true;
-
     synchronizeVideo(message);
-
-    setTimeout(() => {
-        processingMessage = false;
-    }, 2000); // 2-second delay before allowing new messages to be sent
 }
 
 function handleSourceUrlMessage(syncSourceUrlMessage) {
@@ -79,6 +72,5 @@ function handleSourceUrlMessage(syncSourceUrlMessage) {
     if (syncSourceUrlMessage.clientId === clientId) {
         return;
     }
-
     loadVideoById(syncSourceUrlMessage.videoId);
 }
