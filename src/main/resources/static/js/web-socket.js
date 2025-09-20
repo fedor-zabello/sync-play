@@ -37,6 +37,9 @@ export function connect(channelId) {
             let syncSourceUrlMessage = JSON.parse(syncSourceUrlOutput.body);
             handleSourceUrlMessage(syncSourceUrlMessage);
         });
+        if (chatCallback) {
+            stompClient.subscribe('/topic/chat.sendMessage/' + currentChannelId, chatCallback);
+        }
     });
 }
 
@@ -74,3 +77,20 @@ function handleSourceUrlMessage(syncSourceUrlMessage) {
     }
     loadVideoById(syncSourceUrlMessage.videoId);
 }
+let chatCallback = null;
+
+export function subscribeToChat(onMessageReceived) {
+    chatCallback = onMessageReceived;
+
+    if (stompClient?.connected) {
+            stompClient.subscribe('/topic/chat.sendMessage/' + currentChannelId, chatCallback);
+    }
+}
+
+export function sendChatMessage(chatMessage) {
+    if (stompClient?.connected && currentChannelId) {
+        stompClient.send('/app/chat.sendMessage/' + currentChannelId, {}, JSON.stringify(chatMessage));
+    }
+}
+
+export { stompClient };

@@ -10,4 +10,7 @@ class HomePageController {
 
     @GetMapping("/youtube-iframe")
     fun getYoutubeIframe() = "youtube-iframe"
+
+    @GetMapping("/chat-fragment")
+    fun getChatFragment() = "chat-fragment"
 }
