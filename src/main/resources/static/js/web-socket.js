@@ -2,6 +2,7 @@ import {loadVideoById, synchronizeVideo} from "./youtube-player.js";
 
 let stompClient = null;
 let socket = null;
+let chatCallback = null;
 
 const clientId = Math.random().toString(36).substring(2, 15);
 
@@ -37,9 +38,6 @@ export function connect(channelId) {
             let syncSourceUrlMessage = JSON.parse(syncSourceUrlOutput.body);
             handleSourceUrlMessage(syncSourceUrlMessage);
         });
-        if (chatCallback) {
-            stompClient.subscribe('/topic/chat.sendMessage/' + currentChannelId, chatCallback);
-        }
     });
 }
 
@@ -77,7 +75,6 @@ function handleSourceUrlMessage(syncSourceUrlMessage) {
     }
     loadVideoById(syncSourceUrlMessage.videoId);
 }
-let chatCallback = null;
 
 export function subscribeToChat(onMessageReceived) {
     chatCallback = onMessageReceived;
