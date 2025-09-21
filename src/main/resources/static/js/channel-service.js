@@ -73,10 +73,10 @@ async function loadChannelData(channelId) {
             loadButton.addEventListener('click', loadVideo);
             connect(channelId);
         } else {
-            console.error('❌ Ошибка загрузки YouTube iframe');
+            console.error('❌ Error loading YouTube iframe');
         }
     } catch (error) {
-        console.error('❌ Ошибка загрузки YouTube iframe:', error);
+        console.error('❌ Error loading YouTube iframe:', error);
     }
 
     await loadChat(channelId);
@@ -88,20 +88,20 @@ async function loadChannelData(channelId) {
 }
 
 async function loadChat(channelId) {
-    console.log("❓ Значение channelId в loadChat:", channelId);
+    console.log("❓ channelId value in loadChat:", channelId);
 
     const chatContainer = document.getElementById('chat-container');
     try {
         const response = await fetch('/chat-fragment');
         if (response.ok) {
             chatContainer.innerHTML = await response.text();
-            console.log("✅ Чат загружен, вызываем initializeChat()");
+            console.log("✅ Chat loaded, calling initializeChat()");
             setTimeout(() => initializeChat(channelId), 100);
         } else {
-            console.error('❌ Ошибка загрузки chat-fragment');
+            console.error('❌ Error loading chat-fragment');
         }
     } catch (error) {
-        console.error('❌ Ошибка загрузки чата:', error);
+        console.error('❌ Error loading chat:', error);
     }
 }
 

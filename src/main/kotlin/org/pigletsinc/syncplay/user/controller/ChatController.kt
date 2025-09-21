@@ -16,7 +16,7 @@ class ChatController {
         @DestinationVariable channelId: String,
         @Payload chatMessage: CommonMessage,
     ): CommonMessage {
-        println("Получено сообщение: ${chatMessage.messageDate}: ${chatMessage.messageId}: ${chatMessage.sender}: ${chatMessage.content}")
+        println("Message received: ${chatMessage.messageDate}: ${chatMessage.messageId}: ${chatMessage.sender}: ${chatMessage.content}")
         return chatMessage
     }
 

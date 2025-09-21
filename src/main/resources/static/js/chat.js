@@ -3,18 +3,18 @@ import { subscribeToChat, sendChatMessage, stompClient } from "./web-socket.js";
 let username = null;
 
 export function initializeChat(channelId) {
-    console.log("🔥 initializeChat() вызвана!");
+    console.log("🔥 initializeChat() called!");
 
     const messageForm = document.getElementById('messageForm');
     const messageInput = document.getElementById('message');
     const messageArea = document.getElementById('messageArea');
 
     if (!messageForm) {
-        console.error("❌ Форма отправки сообщений НЕ найдена в DOM!");
+        console.error("❌ Message sending form NOT found in DOM!");
         return;
     }
 
-    console.log("✅ Форма найдена, добавляем обработчик...");
+    console.log("✅ Form found, adding event handler...");
 
     messageForm.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -24,7 +24,7 @@ export function initializeChat(channelId) {
     subscribeToChat(onMessageReceived);
 
     function sendMessage() {
-        console.log("📩 Отправка сообщения...");
+        console.log("📩 Sending message...");
         const messageContent = messageInput.value.trim();
         if (messageContent) {
             if (stompClient && stompClient.connected) {
@@ -33,14 +33,14 @@ export function initializeChat(channelId) {
                     content: messageContent,
                     type: "CHAT"
                 };
-                console.log("📤 Отправляем сообщение:", chatMessage);
+                console.log("📤 Sending message:", chatMessage);
                 sendChatMessage(chatMessage);
                 messageInput.value = '';
             } else {
-                console.error("❌ WebSocket не подключен или stompClient не существует");
+                console.error("❌ WebSocket is not connected or stompClient does not exist");
             }
         } else {
-            console.error("❌ Сообщение пустое.");
+            console.error("❌ Message is empty");
         }
     }
 
@@ -62,7 +62,7 @@ export function initializeChat(channelId) {
     const debouncedScrollToBottom = debounce(scrollToBottom, 100);
 
     function onMessageReceived(payload) {
-        console.log("📨 Получено сообщение через WebSocket:", payload.body);
+        console.log("📨 Message received through WebSocket:", payload.body);
         const message = JSON.parse(payload.body);
 
         const messageElement = document.createElement('li');
@@ -96,7 +96,7 @@ export function initializeChat(channelId) {
         }
 
         messageArea.appendChild(messageElement);
-        debouncedScrollToBottom(); // скроллим вниз после каждого сообщения
+        debouncedScrollToBottom();
     }
 }
 
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(response => response.ok ? response.json() : Promise.reject("Failed to fetch user"))
     .then(user => {
         username = user.name;
-        console.log(`👤 Имя пользователя: ${username}`);
+        console.log(`👤 Username: ${username}`);
     })
-    .catch(error => console.error("❌ Ошибка получения пользователя:", error));
+    .catch(error => console.error("❌ Error fetching user:", error));
 });

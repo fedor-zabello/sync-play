@@ -19,20 +19,20 @@
 #messageContainer {
     margin: 15px 0;
     text-align: center;
-    color: white; /* Цвет текста для успешных и ошибочных сообщений */
-    background-color: transparent; /* Без фона */
-    border: none; /* Без обрамления */
-    display: none; /* Изначально скрыто */
+    color: white; /* Text color for success and error messages */
+    background-color: transparent; /* No background */
+    border: none; /* No border */
+    display: none; /* Initially hidden */
 }
 
 .btn-light:hover {
-    background-color: #007bff; /* Синий цвет наводки */
+    background-color: #007bff; /* Blue hover color */
     color: white;
 }
 
 .btn-custom-outline {
-    border: 1px solid white; /* Толщина рамки 1px */
-    border-radius: 0.25rem; /* Закругленные углы, как у других кнопок */
+    border: 1px solid white; /* Border thickness 1px */
+    border-radius: 0.25rem; /* Rounded corners like other buttons */
 }
 
 body {
@@ -66,7 +66,7 @@ body {
 }
 
 #welcome-user {
-    margin-bottom: 10px; /* Adds some space between the welcome message and the logout button */
+    margin-bottom: 10px; /* Adds space between welcome message and logout button */
 }
 
 #logout-button {
