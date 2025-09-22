@@ -1,4 +1,4 @@
-import { subscribeToChat, sendChatMessage, stompClient } from "./web-socket.js";
+import {sendChatMessage, stompClient } from "./web-socket.js";
 
 let username = null;
 
@@ -21,7 +21,6 @@ export function initializeChat(channelId) {
         sendMessage();
     });
 
-    subscribeToChat(onMessageReceived);
 
     function sendMessage() {
         console.log("📩 Sending message...");
@@ -43,25 +42,26 @@ export function initializeChat(channelId) {
             console.error("❌ Message is empty");
         }
     }
+}
 
-    function scrollToBottom() {
-        const messageArea = document.getElementById('messageArea');
-        if (messageArea) {
-            messageArea.scrollTop = messageArea.scrollHeight;
-        }
+function scrollToBottom() {
+    const messageArea = document.getElementById('messageArea');
+    if (messageArea) {
+        messageArea.scrollTop = messageArea.scrollHeight;
     }
+}
 
-    function debounce(func, wait = 100) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
+function debounce(func, wait = 100) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
 
-    const debouncedScrollToBottom = debounce(scrollToBottom, 100);
+const debouncedScrollToBottom = debounce(scrollToBottom, 100);
 
-    function onMessageReceived(payload) {
+export function onMessageReceived(payload) {
         console.log("📨 Message received through WebSocket:", payload.body);
         const message = JSON.parse(payload.body);
 
@@ -98,7 +98,6 @@ export function initializeChat(channelId) {
         messageArea.appendChild(messageElement);
         debouncedScrollToBottom();
     }
-}
 
 function getAvatarColor(messageSender) {
     const colors = ['#2196F3', '#32c787', '#00BCD4', '#ff5652', '#ffc107', '#ff85af', '#FF9800', '#39bbb0'];
