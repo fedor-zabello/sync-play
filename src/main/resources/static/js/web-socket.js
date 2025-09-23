@@ -1,4 +1,5 @@
 import {loadVideoById, synchronizeVideo} from "./youtube-player.js";
+import {onMessageReceived} from "./chat.js";
 
 let stompClient = null;
 let socket = null;
@@ -37,6 +38,7 @@ export function connect(channelId) {
             let syncSourceUrlMessage = JSON.parse(syncSourceUrlOutput.body);
             handleSourceUrlMessage(syncSourceUrlMessage);
         });
+        stompClient.subscribe('/topic/chat.sendMessage/' + currentChannelId, onMessageReceived);
     });
 }
 
@@ -74,3 +76,12 @@ function handleSourceUrlMessage(syncSourceUrlMessage) {
     }
     loadVideoById(syncSourceUrlMessage.videoId);
 }
+
+
+export function sendChatMessage(chatMessage) {
+    if (stompClient?.connected && currentChannelId) {
+        stompClient.send('/app/chat.sendMessage/' + currentChannelId, {}, JSON.stringify(chatMessage));
+    }
+}
+
+export { stompClient };

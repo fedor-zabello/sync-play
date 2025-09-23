@@ -17,11 +17,13 @@ class ChannelState {
     }
 
     fun getCurrentTime(): Long =
-        (if (action == "play") {
-            // Calculate expected current time based on elapsed time
-            val elapsedSeconds = (System.currentTimeMillis() - lastUpdateTime) / 1000
-            time + elapsedSeconds
-        } else {
-            time
-        })
+        (
+            if (action == "play") {
+                // Calculate expected current time based on elapsed time
+                val elapsedSeconds = (System.currentTimeMillis() - lastUpdateTime) / 1000
+                time + elapsedSeconds
+            } else {
+                time
+            }
+        )
 }

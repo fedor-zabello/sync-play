@@ -1,5 +1,6 @@
 import {connect} from "./web-socket.js";
 import {loadPlayer} from "./youtube-player.js";
+import {initializeChat} from "./chat.js";
 import {createChannelOnBackend, deleteChannel, fetchChannelDetails, fetchChannels, renameChannel, inviteMembers} from "./channel-api.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -61,12 +62,49 @@ function hideChannelHeader() {
 
 async function loadChannelData(channelId) {
     const subscriberCountElement = document.getElementById('subscriber-count'); // Get the span element
+    const youtubeContainer = document.getElementById('youtube-container');
+
+    try {
+        const response = await fetch('/youtube-iframe');
+        if (response.ok) {
+            youtubeContainer.innerHTML = await response.text();
+
+            const loadButton = document.getElementById('load-video-button');
+            loadButton.addEventListener('click', loadVideo);
+            connect(channelId);
+        } else {
+            console.error('❌ Error loading YouTube iframe');
+        }
+    } catch (error) {
+        console.error('❌ Error loading YouTube iframe:', error);
+    }
+
+    await loadChat(channelId);
 
     fetchChannelDetails(channelId).then(channelData => {
         const subscriberCount = channelData.subscribersCount;
         subscriberCountElement.textContent = `${subscriberCount} subscribers`; // Update the text content
     });
 }
+
+async function loadChat(channelId) {
+    console.log("❓ channelId value in loadChat:", channelId);
+
+    const chatContainer = document.getElementById('chat-container');
+    try {
+        const response = await fetch('/chat-fragment');
+        if (response.ok) {
+            chatContainer.innerHTML = await response.text();
+            console.log("✅ Chat loaded, calling initializeChat()");
+            setTimeout(() => initializeChat(channelId), 100);
+        } else {
+            console.error('❌ Error loading chat-fragment');
+        }
+    } catch (error) {
+        console.error('❌ Error loading chat:', error);
+    }
+}
+
 
 async function createChannel(channelName) {
     createChannelOnBackend(channelName).then(newChannel => {

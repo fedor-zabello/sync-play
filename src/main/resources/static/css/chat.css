@@ -1,0 +1,126 @@
+/* Container of the entire chat */
+#chat-page {
+  position: fixed; /* fixed positioning on the screen */
+  top: 60px; /* top margin to not cover the header */
+  right: 0; /* stick to the right edge of the window */
+  height: calc(100vh - 60px); /* screen height minus header height */
+  width: 320px; /* fixed chat width */
+  color: black !important; /* text color */
+  display: flex; /* flex container for vertical layout */
+  flex-direction: column; /* layout elements from top to bottom */
+  background-color: transparent !important; /* transparent background */
+  border-left: 1px solid #ccc; /* left border for separation */
+  box-sizing: border-box; /* include padding and border in width/height */
+  z-index: 9999; /* above other elements */
+  overflow: hidden; /* hide overflowing content */
+  background-image: none !important; /* remove background image */
+}
+
+/* Message list */
+#messageArea {
+  display: flex; /* flex container for messages */
+  flex-direction: column; /* messages flow top to bottom */
+  justify-content: flex-end; /* !!! IMPORTANT: align content to bottom edge !!! */
+  overflow-y: auto; /* vertical scroll if overflow */
+  margin: 0; /* remove outer margins */
+  padding: 0 6px; /* horizontal inner padding */
+  list-style: none; /* remove list markers */
+  background-color: transparent !important; /* transparent background */
+  background-image: none !important; /* remove background image */
+  word-wrap: break-word; /* break long words */
+  flex-grow: 1; /* fill all available vertical space */
+}
+
+/* Messages */
+.chat-message {
+  background-color: #212529; /* message background color */
+  color: #f8f9fa; /* text color */
+  border-radius: 6px; /* rounded corners */
+  padding-top: 2px;     /* top padding */
+  padding-right: 6px;   /* right padding */
+  padding-bottom: 2px;  /* reduced bottom padding */
+  padding-left: 6px;    /* left padding */
+  margin: 2px 0; /* vertical margin between messages */
+  display: flex; /* flex container for message content */
+  flex-direction: column; /* layout elements inside message top to bottom */
+  font-size: 13px; /* font size */
+  line-height: 1.2; /* line height */
+}
+
+/* Header avatar + name */
+.chat-message .header {
+  display: flex; /* flex container for avatar and name */
+  align-items: center; /* vertical center alignment */
+  margin-bottom: 1px; /* bottom margin to separate from text */
+  background: none; /* remove background */
+  border: none; /* remove borders */
+  padding-left: 0; /* remove left padding */
+  font-size: 12px; /* font size for name */
+}
+
+/* Sender icons */
+.chat-message .header i {
+  width: 18px; /* avatar width */
+  height: 18px; /* avatar height */
+  border-radius: 50%; /* round avatars */
+  background-color: #2196F3; /* blue background */
+  color: white; /* white icon color */
+  display: flex; /* flex for centering content */
+  align-items: center; /* vertical centering */
+  justify-content: center; /* horizontal centering */
+  font-weight: bold; /* bold font */
+  margin-right: 3px; /* right margin from avatar */
+  font-size: 11px; /* font size inside avatar */
+}
+
+/* Sender name */
+.chat-message .header span {
+  font-weight: bold; /* bold font style */
+  font-size: 12px; /* font size */
+  padding-left: 0; /* remove left padding */
+}
+
+/* Nested container for messages and form */
+.chat-container {
+  display: flex; /* flex container */
+  flex-direction: column; /* layout top to bottom */
+  height: 100%; /* take full height of parent */
+  background-color: transparent !important; /* transparent background */
+  background-image: none !important; /* remove background image */
+}
+
+/* Send form - NOT absolute, occupies space in flow */
+.fixed-form {
+  display: flex; /* flex container for form elements */
+  padding: 6px; /* inner padding */
+  border-top: 1px solid #ccc; /* top border */
+  background-color: transparent !important; /* transparent background */
+  background-image: none !important; /* remove background image */
+  box-sizing: border-box; /* include padding and border */
+  gap: 5px; /* gap between elements */
+  flex-shrink: 0; /* do not shrink when space is tight */
+}
+
+/* Input field */
+.fixed-form input[type="text"] {
+  flex-grow: 1; /* take available space */
+  border-radius: 4px; /* rounded corners */
+  border: 1px solid #ccc; /* input border */
+  padding: 6px 8px; /* inner padding */
+  height: 36px; /* input height */
+  font-size: 13px; /* font size */
+  box-sizing: border-box; /* include padding and border */
+  background-color: #fff; /* white background */
+  background-image: none !important; /* remove background image */
+}
+
+/* Send button */
+.fixed-form button.primary {
+  background-color: #2196F3; /* blue button background */
+  border: none; /* no border */
+  color: white; /* white text color */
+  padding: 0 16px; /* horizontal padding */
+  height: 36px; /* button height */
+  border-radius: 4px; /* rounded corners */
+  cursor: pointer; /* hand cursor on hover */
+}
