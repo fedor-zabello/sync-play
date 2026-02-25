@@ -1,10 +1,13 @@
 package org.pigletsinc.syncplay.user.repository
 
 import org.assertj.core.api.Assertions.assertThat
-import org.pigletsinc.syncplay.user.entity.Channel
-import org.pigletsinc.syncplay.user.entity.GoogleOauth
-import org.pigletsinc.syncplay.user.entity.UserCredentials
-import org.pigletsinc.syncplay.user.entity.UserProfile
+import org.pigletsinc.syncplay.repository.channel.entity.ChannelJpa
+import org.pigletsinc.syncplay.repository.user.entity.GoogleOauthJpa
+import org.pigletsinc.syncplay.repository.user.entity.UserCredentialsJpa
+import org.pigletsinc.syncplay.repository.user.entity.UserProfileJpa
+import org.pigletsinc.syncplay.repository.user.jpainterfaces.GoogleOauthRepositoryJpa
+import org.pigletsinc.syncplay.repository.user.jpainterfaces.UserCredentialsRepositoryJpa
+import org.pigletsinc.syncplay.repository.user.jpainterfaces.UserProfileRepositoryJpa
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -17,14 +20,14 @@ class UserRepositoryTest
     @Autowired
     constructor(
         val entityManager: TestEntityManager,
-        val userCredentialsRepository: UserCredentialsRepository,
-        val userProfileRepository: UserProfileRepository,
-        val googleOauthRepository: GoogleOauthRepository,
+        val userCredentialsRepository: UserCredentialsRepositoryJpa,
+        val userProfileRepository: UserProfileRepositoryJpa,
+        val googleOauthRepository: GoogleOauthRepositoryJpa,
     ) {
         @Test
         fun `UserCredentials are persisted correctly`() {
-            val mrPigletProfile = UserProfile(name = "mr. Piglet")
-            val mrPigletCreds = UserCredentials(email = "pig@let.com", password = "pass", userProfile = mrPigletProfile)
+            val mrPigletProfile = UserProfileJpa(name = "mr. Piglet")
+            val mrPigletCreds = UserCredentialsJpa(email = "pig@let.com", password = "pass", userProfile = mrPigletProfile)
             entityManager.persist(mrPigletProfile)
             entityManager.persist(mrPigletCreds)
             entityManager.flush()
@@ -34,9 +37,9 @@ class UserRepositoryTest
 
         @Test
         fun `GoogleOauth is persisted correctly`() {
-            val mrPigletProfile = UserProfile(name = "mr. Piglet")
+            val mrPigletProfile = UserProfileJpa(name = "mr. Piglet")
             val mrPigletGoogleOauth =
-                GoogleOauth(oauthId = "oauth-id", email = "pig@let.com", userProfile = mrPigletProfile)
+                GoogleOauthJpa(oauthId = "oauth-id", email = "pig@let.com", userProfile = mrPigletProfile)
             entityManager.persist(mrPigletProfile)
             entityManager.persist(mrPigletGoogleOauth)
             entityManager.flush()
@@ -46,7 +49,7 @@ class UserRepositoryTest
 
         @Test
         fun `UserProfile is persisted correctly`() {
-            val mrPigletProfile = UserProfile(name = "mr. Piglet")
+            val mrPigletProfile = UserProfileJpa(name = "mr. Piglet")
             entityManager.persist(mrPigletProfile)
             entityManager.flush()
             val foundProfile = userProfileRepository.findAll()
@@ -55,8 +58,8 @@ class UserRepositoryTest
 
         @Test
         fun `Channel memberships are persisted correctly`() {
-            val mrPigletProfile = UserProfile(name = "mr. Piglet")
-            val prawnsClubChannel = Channel(name = "prawns-club")
+            val mrPigletProfile = UserProfileJpa(name = "mr. Piglet")
+            val prawnsClubChannel = ChannelJpa(name = "prawns-club")
 
             mrPigletProfile.channels.add(prawnsClubChannel)
             prawnsClubChannel.userProfiles.add(mrPigletProfile)
