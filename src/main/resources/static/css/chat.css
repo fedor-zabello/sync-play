@@ -9,8 +9,7 @@
   display: flex; /* flex container for vertical layout */
   flex-direction: column; /* layout elements from top to bottom */
   background-color: transparent !important; /* transparent background */
-  border-left: 1px solid #ccc; /* left border for separation */
-  box-sizing: border-box; /* include padding and border in width/height */
+box-sizing: border-box; /* include padding and border in width/height */
   z-index: 9999; /* above other elements */
   overflow: hidden; /* hide overflowing content */
   background-image: none !important; /* remove background image */
@@ -93,7 +92,6 @@
 .fixed-form {
   display: flex; /* flex container for form elements */
   padding: 6px; /* inner padding */
-  border-top: 1px solid #ccc; /* top border */
   background-color: transparent !important; /* transparent background */
   background-image: none !important; /* remove background image */
   box-sizing: border-box; /* include padding and border */

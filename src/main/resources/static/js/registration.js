@@ -20,9 +20,15 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(response => {
                 if (!response.ok) {
-                    return response.json().then(data => {
-                        throw new Error(data.error || 'Failed to register.');
-                    });
+                    return response.json()
+                        .catch(() => null)
+                        .then(data => {
+                            console.error('Registration failed. Status:', response.status, 'Body:', data);
+                            const message = data?.error
+                                || (data && Object.values(data).filter(v => typeof v === 'string').join(', '))
+                                || `Request failed with status ${response.status}`;
+                            throw new Error(message);
+                        });
                 }
                 return response.json();
             })

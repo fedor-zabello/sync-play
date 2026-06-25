@@ -1,10 +1,21 @@
 # Getting Started
 
-### This project uses Spring Modulith
+### Architecture
 
-This project follows a modular monolith architecture using Spring Modulith
-to logically organize the codebase into feature-specific modules. 
-Each module is designed to be independent and encapsulates related functionality.
+This project follows a layered architecture with the following layers:
 
-This project contains application modules tests, which test that internal classes
-of one package are not imported in other packages.
+- **web** — controllers and WebSocket handlers (entry points)
+- **application** — application services orchestrating domain logic
+- **domain** — core domain entities and business rules
+- **repository** — persistence layer (JPA entities, mappers, repository implementations)
+
+Layer dependency rules are enforced by ArchUnit via `ApplicationModulesTest.verifiesLayerDependencies`:
+
+```
+web → application → domain ← repository
+```
+
+- **web** may only access **application**
+- **application** may only access **domain**
+- **repository** may only access **domain**
+- **domain** has no dependencies on other layers
